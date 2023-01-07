@@ -27,6 +27,7 @@ const GlobalStyles = createGlobalStyle`
     -webkit-user-select: none;
     user-select: none;
     font-family: 'Source Sans Pro', sans-serif;
+    background-color: ${({ theme }) => theme.bgColor};
   }
   a {
     text-decoration: none;
