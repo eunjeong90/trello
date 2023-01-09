@@ -1,27 +1,17 @@
 import { atom, selector } from "recoil";
 
+export interface ITodo {
+  id: number;
+  text: string;
+}
 interface ITodoState {
-  [key: string]: string[];
+  [key: string]: ITodo[];
 }
 export const toDoState = atom<ITodoState>({
   key: "toDo",
   default: {
-    "To Do": ["a", "b"],
-    Doing: ["c", "d", "e"],
-    Done: ["f"],
+    "To Do": [],
+    Doing: [],
+    Done: [],
   },
 });
-
-// export const toDoSelector = selector<[]>({
-//   key: "toDoSelect",
-//   get: ({ get }) => {
-//     const toDo = get(toDoState);
-//     return console.log(toDo);
-//   },
-//   set: ({ set }, list, startIndex, endIndex) => {
-//     const toDo = list;
-//     const [removed] = toDo.splice(startIndex, 1);
-//     toDo.splice(endIndex, 0, toDo);
-//     set(toDo);
-//   },
-// });
