@@ -102,12 +102,12 @@ const Board = ({ toDos, boardId }: IToDos) => {
     });
     setValue("task", "");
   };
-  // const handleCardTitleKeyPress = (keyEvent: React.KeyboardEvent) => {
-  //   if (keyEvent.key === "Enter" && keyEvent.shiftKey === false) {
-  //     keyEvent.preventDefault();
-  //     handleSubmit(onCardTitleSubmit)();
-  //   }
-  // };
+  const handleCardTitleKeyPress = (keyEvent: React.KeyboardEvent) => {
+    if (keyEvent.key === "Enter" && keyEvent.shiftKey === false) {
+      keyEvent.preventDefault();
+      handleSubmit(onCardTitleSubmit)();
+    }
+  };
 
   // const onChangeTitle = (
   //   event: React.FormEvent<HTMLTextAreaElement>,
@@ -161,13 +161,13 @@ const Board = ({ toDos, boardId }: IToDos) => {
             </CardArea>
           )}
         </Droppable>
-        {/* <EnterForm onSubmit={handleSubmit(onCardTitleSubmit)}>
+        <EnterForm onSubmit={handleSubmit(onCardTitleSubmit)}>
           <EnterCardTitle
             {...register("task", { required: true })}
             onKeyDown={handleCardTitleKeyPress}
             placeholder={`Enter a ${boardId.toLowerCase()} for this card...`}
           />
-        </EnterForm> */}
+        </EnterForm>
       </Wrapper>
     </>
   );
