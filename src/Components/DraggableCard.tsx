@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 
@@ -6,9 +6,15 @@ interface IToDoProps {
   toDoId: number;
   toDoText: string;
   index: number;
+  handleCardRemove: (param: number) => void;
 }
 
-const DraggableCard = ({ toDoId, toDoText, index }: IToDoProps) => {
+const DraggableCard = ({
+  toDoId,
+  toDoText,
+  index,
+  handleCardRemove,
+}: IToDoProps) => {
   return (
     <Draggable draggableId={toDoId + ""} index={index}>
       {(magic, snapshot) => (
@@ -18,7 +24,8 @@ const DraggableCard = ({ toDoId, toDoText, index }: IToDoProps) => {
           {...magic.dragHandleProps}
           {...magic.draggableProps}
         >
-          {toDoText}
+          <span>{toDoText}</span>
+          <DeleteButton onClick={() => handleCardRemove(index)}>x</DeleteButton>
         </Card>
       )}
     </Draggable>
@@ -35,4 +42,7 @@ const Card = styled.div<{ isDragging: boolean }>`
     isDragging ? "#e4f2ff" : theme.cardColor};
   box-shadow: ${({ isDragging }) =>
     isDragging ? "0px 2px 5px rgba(0, 0, 0, 0.05)" : "none"};
+  display: flex;
+  justify-content: space-between;
 `;
+const DeleteButton = styled.button``;

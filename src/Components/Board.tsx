@@ -1,12 +1,12 @@
-import { ITodo, toDoState } from "atoms";
+import { IBoardType, BoardState } from "recoil/BoardState";
 import { Droppable } from "react-beautiful-dnd";
 import { useForm } from "react-hook-form";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import DraggableCard from "./DraggableCard";
 
-interface IToDos {
-  toDos: ITodo[];
+interface IBoard {
+  toDos: IBoardType[];
   boardId: string;
 }
 const Wrapper = styled.div`
@@ -84,10 +84,10 @@ interface IForm {
   // cardTitle: string;
   data: string;
 }
-const Board = ({ toDos, boardId }: IToDos) => {
-  const setToDos = useSetRecoilState(toDoState);
+const Board = ({ toDos, boardId }: IBoard) => {
+  const setToDos = useSetRecoilState(BoardState);
   const { register, setValue, handleSubmit } = useForm<IForm>();
-
+  console.log(toDos);
   const onCardTitleSubmit = ({ task }: IForm) => {
     // console.log(task);
     const newToDo = {
@@ -108,37 +108,22 @@ const Board = ({ toDos, boardId }: IToDos) => {
       handleSubmit(onCardTitleSubmit)();
     }
   };
+  const handleCardRemove = (index: number) => {
+    setToDos((allBoards) => {
+      const boardCopy = [...allBoards[boardId]];
+      boardCopy.splice(index, 1);
+      return {
+        ...allBoards,
+        [boardId]: boardCopy,
+      };
+    });
+  };
 
-  // const onChangeTitle = (
-  //   event: React.FormEvent<HTMLTextAreaElement>,
-  //   keyEvent: React.KeyboardEvent
-  // ) => {
-  //   const targetTitle = { cardTitle: event.currentTarget.value };
-  //   console.log(targetTitle);
-
-  // if (keyEvent.key === "Enter" && keyEvent.shiftKey === false) {
-  //   setToDos((allBoard) => {
-  //     return {
-  //       ...allBoard,
-  //       // [newTitle]: [...allBoard[boardId]],
-  //     };
-  //   });
-  //   // return handleSubmit(CommentOnSubmit(data));
-  // }
-  // };
   return (
     <>
       <Wrapper>
         <TitleForm>
-          <Title
-            // {...register("cardTitle", {
-            //   required: true,
-            // })}
-            name="cardTitle"
-            // onKeyDown={onChangeTitle}
-          >
-            {boardId}
-          </Title>
+          <Title>{boardId}</Title>
         </TitleForm>
 
         <Droppable droppableId={boardId}>
@@ -155,6 +140,7 @@ const Board = ({ toDos, boardId }: IToDos) => {
                   toDoText={toDo.text}
                   index={index}
                   key={toDo.id}
+                  handleCardRemove={handleCardRemove}
                 />
               ))}
               {magic.placeholder}
