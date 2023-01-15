@@ -20,7 +20,7 @@ export const BoardState = atom<Array<IBoardState>>({
       title: "To Do",
       content: [
         {
-          contentId: Date.now(),
+          contentId: 1,
           value: "study",
         },
       ],
@@ -29,7 +29,7 @@ export const BoardState = atom<Array<IBoardState>>({
       title: "Doing",
       content: [
         {
-          contentId: Date.now(),
+          contentId: 2,
           value: "someting",
         },
       ],
@@ -38,7 +38,7 @@ export const BoardState = atom<Array<IBoardState>>({
       title: "Done",
       content: [
         {
-          contentId: Date.now(),
+          contentId: 3,
           value: "eat",
         },
       ],
