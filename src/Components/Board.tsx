@@ -6,9 +6,105 @@ import styled from "styled-components";
 import DraggableCard from "./DraggableCard";
 
 interface IBoard {
-  toDos: IBoardType[];
-  boardId: string;
+  boardContent: IBoardType[];
+  boardTitle: string;
+  boardIndex: number;
 }
+interface ICardAreaProps {
+  isDraggingOver: boolean;
+  draggingFromThisWith: boolean;
+}
+
+interface IForm {
+  task: string;
+  data: string;
+  title: string;
+}
+const Board = ({ boardContent, boardTitle, boardIndex }: IBoard) => {
+  const setBoards = useSetRecoilState(BoardState);
+  const { register, setValue, handleSubmit } = useForm<IForm>({
+    defaultValues: { task: "" },
+  });
+
+  const onCreateCardSubmit = ({ task }: IForm) => {
+    setBoards((prevBoard) => {
+      const copyBoard = [...prevBoard];
+      const targetBoardContent = [...prevBoard[boardIndex].content];
+      const newCard = {
+        contentId: Date.now(),
+        value: task,
+      };
+      copyBoard[boardIndex] = {
+        title: copyBoard[boardIndex].title,
+        content: [...targetBoardContent, newCard],
+      };
+      return [...copyBoard];
+    });
+    setValue("task", "");
+  };
+  const handleCardTitleKeyPress = (keyEvent: React.KeyboardEvent) => {
+    if (keyEvent.key === "Enter" && keyEvent.shiftKey === false) {
+      keyEvent.preventDefault();
+      handleSubmit(onCreateCardSubmit)();
+    }
+  };
+  const handleCardRemove = (index: number) => {
+    setBoards((allBoards) => {
+      const copyBoard = [...allBoards];
+      const targetBoardContent = [...copyBoard[boardIndex].content];
+      console.log(targetBoardContent);
+      targetBoardContent.splice(index, 1);
+      copyBoard[boardIndex] = {
+        title: copyBoard[boardIndex].title,
+        content: [...targetBoardContent],
+      };
+      return [...copyBoard];
+    });
+  };
+
+  return (
+    <>
+      <Wrapper>
+        <TitleForm>
+          <Title name="title">{boardTitle}</Title>
+        </TitleForm>
+
+        <Droppable droppableId={boardTitle}>
+          {(magic, snapshot) => (
+            <CardArea
+              isDraggingOver={snapshot.isDraggingOver}
+              draggingFromThisWith={Boolean(snapshot.draggingFromThisWith)}
+              ref={magic.innerRef}
+              {...magic.droppableProps}
+            >
+              {boardContent.map((toDo, index) => (
+                <DraggableCard
+                  toDoId={toDo.contentId}
+                  toDoText={toDo.value}
+                  index={index}
+                  key={toDo.contentId}
+                  handleCardRemove={handleCardRemove}
+                />
+              ))}
+              {magic.placeholder}
+            </CardArea>
+          )}
+        </Droppable>
+        <EnterForm onSubmit={handleSubmit(onCreateCardSubmit)}>
+          <EnterCardTitle
+            {...register("task", { required: true })}
+            name="task"
+            onKeyDown={handleCardTitleKeyPress}
+            placeholder={`Enter a ${boardTitle.toLowerCase()} for this card...`}
+          />
+        </EnterForm>
+      </Wrapper>
+    </>
+  );
+};
+
+export default Board;
+
 const Wrapper = styled.div`
   background-color: ${({ theme }) => theme.boardColor};
   border-radius: 5px;
@@ -39,10 +135,7 @@ const Title = styled(TextArea)`
     background: #ffffff;
   }
 `;
-interface ICardAreaProps {
-  isDraggingOver: boolean;
-  draggingFromThisWith: boolean;
-}
+
 const CardArea = styled.div<ICardAreaProps>`
   background-color: ${({ isDraggingOver, draggingFromThisWith }) =>
     isDraggingOver
@@ -78,85 +171,3 @@ const EnterCardTitle = styled(TextArea)`
   line-height: 20px;
   overflow-wrap: break-word;
 `;
-
-interface IForm {
-  task: string;
-  // cardTitle: string;
-  data: string;
-}
-const Board = ({ toDos, boardId }: IBoard) => {
-  const setToDos = useSetRecoilState(BoardState);
-  const { register, setValue, handleSubmit } = useForm<IForm>();
-  console.log(toDos);
-  const onCardTitleSubmit = ({ task }: IForm) => {
-    // console.log(task);
-    const newToDo = {
-      id: Date.now(),
-      text: task,
-    };
-    setToDos((prevBoard) => {
-      return {
-        ...prevBoard,
-        [boardId]: [...prevBoard[boardId], newToDo],
-      };
-    });
-    setValue("task", "");
-  };
-  const handleCardTitleKeyPress = (keyEvent: React.KeyboardEvent) => {
-    if (keyEvent.key === "Enter" && keyEvent.shiftKey === false) {
-      keyEvent.preventDefault();
-      handleSubmit(onCardTitleSubmit)();
-    }
-  };
-  const handleCardRemove = (index: number) => {
-    setToDos((allBoards) => {
-      const boardCopy = [...allBoards[boardId]];
-      boardCopy.splice(index, 1);
-      return {
-        ...allBoards,
-        [boardId]: boardCopy,
-      };
-    });
-  };
-
-  return (
-    <>
-      <Wrapper>
-        <TitleForm>
-          <Title>{boardId}</Title>
-        </TitleForm>
-
-        <Droppable droppableId={boardId}>
-          {(magic, snapshot) => (
-            <CardArea
-              isDraggingOver={snapshot.isDraggingOver}
-              draggingFromThisWith={Boolean(snapshot.draggingFromThisWith)}
-              ref={magic.innerRef}
-              {...magic.droppableProps}
-            >
-              {toDos.map((toDo, index) => (
-                <DraggableCard
-                  toDoId={toDo.id}
-                  toDoText={toDo.text}
-                  index={index}
-                  key={toDo.id}
-                  handleCardRemove={handleCardRemove}
-                />
-              ))}
-              {magic.placeholder}
-            </CardArea>
-          )}
-        </Droppable>
-        <EnterForm onSubmit={handleSubmit(onCardTitleSubmit)}>
-          <EnterCardTitle
-            {...register("task", { required: true })}
-            onKeyDown={handleCardTitleKeyPress}
-            placeholder={`Enter a ${boardId.toLowerCase()} for this card...`}
-          />
-        </EnterForm>
-      </Wrapper>
-    </>
-  );
-};
-
-export default Board;
