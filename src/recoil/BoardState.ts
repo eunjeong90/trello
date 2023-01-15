@@ -3,7 +3,7 @@ import { recoilPersist } from "recoil-persist";
 
 export interface IBoardType {
   contentId: number;
-  value: string[];
+  value: string;
 }
 interface IBoardState {
   title: string;
@@ -21,7 +21,7 @@ export const BoardState = atom<Array<IBoardState>>({
       content: [
         {
           contentId: Date.now(),
-          value: [],
+          value: "study",
         },
       ],
     },
@@ -30,7 +30,7 @@ export const BoardState = atom<Array<IBoardState>>({
       content: [
         {
           contentId: Date.now(),
-          value: [],
+          value: "someting",
         },
       ],
     },
@@ -39,7 +39,7 @@ export const BoardState = atom<Array<IBoardState>>({
       content: [
         {
           contentId: Date.now(),
-          value: [],
+          value: "eat",
         },
       ],
     },
