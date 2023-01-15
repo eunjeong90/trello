@@ -2,22 +2,47 @@ import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
 
 export interface IBoardType {
-  id: number;
-  text: string;
+  contentId: number;
+  value: string[];
 }
 interface IBoardState {
-  [key: string]: IBoardType[];
+  title: string;
+  content: IBoardType[];
 }
 const { persistAtom } = recoilPersist({
-  key: "toDoPersist",
+  key: "boardsPersist",
   storage: localStorage,
 });
-export const BoardState = atom<IBoardState>({
-  key: "toDo",
-  default: {
-    "To Do": [],
-    Doing: [],
-    Done: [],
-  },
+export const BoardState = atom<Array<IBoardState>>({
+  key: "boards",
+  default: [
+    {
+      title: "To Do",
+      content: [
+        {
+          contentId: Date.now(),
+          value: [],
+        },
+      ],
+    },
+    {
+      title: "Doing",
+      content: [
+        {
+          contentId: Date.now(),
+          value: [],
+        },
+      ],
+    },
+    {
+      title: "Done",
+      content: [
+        {
+          contentId: Date.now(),
+          value: [],
+        },
+      ],
+    },
+  ],
   effects_UNSTABLE: [persistAtom],
 });
