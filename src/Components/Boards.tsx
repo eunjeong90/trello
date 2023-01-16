@@ -1,4 +1,4 @@
-import { Droppable } from "react-beautiful-dnd";
+import { Draggable, Droppable } from "react-beautiful-dnd";
 import { useRecoilValue } from "recoil";
 import { BoardState } from "recoil/BoardState";
 import styled from "styled-components";
@@ -10,20 +10,29 @@ const Boards = () => {
   console.log(boards);
   return (
     <>
-      <CreateBoard />
       <Wrapper>
-        {/* <Droppable droppableId={boardId}> */}
-        <BoardsArea>
-          {boards.map((board, index) => (
-            <Board
-              key={board.title}
-              boardContent={board.content}
-              boardTitle={board.title}
-              boardIndex={index}
-            />
-          ))}
-        </BoardsArea>
-        {/* </Droppable> */}
+        <BoardsBox>
+          <Droppable
+            droppableId="boardsArea"
+            type="BOARD"
+            direction="horizontal"
+          >
+            {(magic, snapshot) => (
+              <BoardsArea ref={magic.innerRef} {...magic.droppableProps}>
+                {boards.map((board, index) => (
+                  <div key={board.title}>
+                    <Board
+                      boardContent={board.content}
+                      boardTitle={board.title}
+                      boardIndex={index}
+                    />
+                  </div>
+                ))}
+                <CreateBoard />
+              </BoardsArea>
+            )}
+          </Droppable>
+        </BoardsBox>
       </Wrapper>
     </>
   );
@@ -33,21 +42,39 @@ export default Boards;
 
 const Wrapper = styled.div`
   display: flex;
-  /* max-width: 680px; */
-  width: 100%;
-  margin: 0 auto;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  flex-direction: column;
+  height: 100%;
+  margin-right: 0;
+  position: relative;
+  transition: margin 0.1s ease-in;
+`;
+const BoardsBox = styled.div`
+  flex-grow: 1;
+  position: relative;
 `;
 
 const BoardsArea = styled.div`
   width: 100%;
-  /* display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(3, 1fr); */
-  display: flex;
+  bottom: 0;
+  left: 0;
+  margin-top: 10px;
+  margin-bottom: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 8px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  -webkit-user-select: none;
+  user-select: none;
+  white-space: nowrap;
   > div {
     margin-right: 10px;
+    display: inline-block;
+    height: 100%;
+    margin: 0 4px;
+    vertical-align: top;
+    white-space: nowrap;
+    width: 272px;
   }
 `;

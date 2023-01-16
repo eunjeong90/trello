@@ -1,14 +1,14 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { BoardState } from "recoil/BoardState";
+import styled from "styled-components";
 
 interface IForm {
   createBoard: string;
 }
 
 const CreateBoard = () => {
-  const [boards, setBoards] = useRecoilState(BoardState);
-  console.log(boards);
+  const setBoards = useSetRecoilState(BoardState);
   const { register, handleSubmit, setValue } = useForm<IForm>({
     // defaultValue: { createBoard: "" },
   });
@@ -24,17 +24,24 @@ const CreateBoard = () => {
     setValue("createBoard", "");
   };
   return (
-    <form onSubmit={handleSubmit(onSubmitNewBoard)}>
-      <input
-        {...register("createBoard", {
-          required: true,
-          maxLength: 20,
-          minLength: 1,
-        })}
-        type="text"
-      />
-    </form>
+    <CreateBox>
+      <form onSubmit={handleSubmit(onSubmitNewBoard)}>
+        <input
+          {...register("createBoard", {
+            required: true,
+            maxLength: 20,
+            minLength: 1,
+          })}
+          type="text"
+          placeholder="Enter list title..."
+        />
+      </form>
+    </CreateBox>
   );
 };
 
 export default CreateBoard;
+
+const CreateBox = styled.div`
+  display: inline-block;
+`;

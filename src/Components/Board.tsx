@@ -1,9 +1,12 @@
 import { IBoardType, BoardState } from "recoil/BoardState";
-import { Droppable } from "react-beautiful-dnd";
+import { Draggable, Droppable } from "react-beautiful-dnd";
 import { useForm } from "react-hook-form";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import DraggableCard from "./DraggableCard";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import React from "react";
 
 interface IBoard {
   boardContent: IBoardType[];
@@ -23,7 +26,7 @@ interface IForm {
 const Board = ({ boardContent, boardTitle, boardIndex }: IBoard) => {
   const setBoards = useSetRecoilState(BoardState);
   const { register, setValue, handleSubmit } = useForm<IForm>({
-    defaultValues: { task: "" },
+    defaultValues: { task: "", title: "" },
   });
 
   const onCreateCardSubmit = ({ task }: IForm) => {
@@ -62,43 +65,60 @@ const Board = ({ boardContent, boardTitle, boardIndex }: IBoard) => {
     });
   };
 
+  const onClick = (e: React.MouseEvent) => {
+    console.log(e);
+  };
   return (
     <>
-      <Wrapper>
-        <TitleForm>
-          <Title name="title">{boardTitle}</Title>
-        </TitleForm>
+      <Draggable draggableId={boardTitle} index={boardIndex} key={boardTitle}>
+        {(magic) => (
+          <Wrapper
+            ref={magic.innerRef}
+            {...magic.dragHandleProps}
+            {...magic.draggableProps}
+          >
+            <Header>
+              <TargetArea onClick={onClick} />
+              <Title>{boardTitle}</Title>
+              <HeaderListIconBox>
+                <div>
+                  <FontAwesomeIcon icon={faEllipsis} />
+                </div>
+              </HeaderListIconBox>
+            </Header>
 
-        <Droppable droppableId={boardTitle}>
-          {(magic, snapshot) => (
-            <CardArea
-              isDraggingOver={snapshot.isDraggingOver}
-              draggingFromThisWith={Boolean(snapshot.draggingFromThisWith)}
-              ref={magic.innerRef}
-              {...magic.droppableProps}
-            >
-              {boardContent.map((toDo, index) => (
-                <DraggableCard
-                  toDoId={toDo.contentId}
-                  toDoText={toDo.value}
-                  index={index}
-                  key={toDo.contentId}
-                  handleCardRemove={handleCardRemove}
-                />
-              ))}
-              {magic.placeholder}
-            </CardArea>
-          )}
-        </Droppable>
-        <EnterForm onSubmit={handleSubmit(onCreateCardSubmit)}>
-          <EnterCardTitle
-            {...register("task", { required: true })}
-            name="task"
-            onKeyDown={handleCardTitleKeyPress}
-            placeholder={`Enter a ${boardTitle.toLowerCase()} for this card...`}
-          />
-        </EnterForm>
-      </Wrapper>
+            <Droppable droppableId={boardTitle} type="CARD">
+              {(magic, snapshot) => (
+                <CardArea
+                  isDraggingOver={snapshot.isDraggingOver}
+                  draggingFromThisWith={Boolean(snapshot.draggingFromThisWith)}
+                  ref={magic.innerRef}
+                  {...magic.droppableProps}
+                >
+                  {boardContent.map((toDo, index) => (
+                    <DraggableCard
+                      toDoId={toDo.contentId}
+                      toDoText={toDo.value}
+                      index={index}
+                      key={toDo.contentId}
+                      handleCardRemove={handleCardRemove}
+                    />
+                  ))}
+                  {magic.placeholder}
+                </CardArea>
+              )}
+            </Droppable>
+            <EnterForm onSubmit={handleSubmit(onCreateCardSubmit)}>
+              <EnterCardTitle
+                {...register("task", { required: true })}
+                name="task"
+                onKeyDown={handleCardTitleKeyPress}
+                placeholder={`Enter a ${boardTitle.toLowerCase()} for this card...`}
+              />
+            </EnterForm>
+          </Wrapper>
+        )}
+      </Draggable>
     </>
   );
 };
@@ -108,9 +128,33 @@ export default Board;
 const Wrapper = styled.div`
   background-color: ${({ theme }) => theme.boardColor};
   border-radius: 5px;
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
+  /* min-height: 300px; */
+  /* display: flex;
+  flex-direction: column; */
+  padding-bottom: 20px;
+  max-height: 100vh;
+
+  /* display: inline-block;
+  height: 100%;
+  margin: 0 4px;
+  vertical-align: top;
+  white-space: nowrap;
+  width: 272px; */
+`;
+const Header = styled.div`
+  flex: 0 0 auto;
+  min-height: 20px;
+  padding: 10px 8px;
+  position: relative;
+  padding-right: 36px;
+`;
+const TargetArea = styled.div`
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
 `;
 const TextArea = styled.textarea`
   border-radius: 3px;
@@ -127,12 +171,32 @@ const TextArea = styled.textarea`
   border: none;
 `;
 const Title = styled(TextArea)`
-  text-align: left;
   font-size: 16px;
+  overflow: hidden;
+  overflow-wrap: break-word;
   background: #0000;
+  border-radius: 3px;
+  box-shadow: none;
+  font-weight: 600;
+  height: 28px;
+  margin: -4px 0;
+  max-height: 256px;
+  min-height: 20px;
+  width: 100%;
+  padding: 4px 8px;
   &:focus {
     box-shadow: inset 0 0 0 2px #0079bf;
     background: #ffffff;
+  }
+`;
+const HeaderListIconBox = styled.div`
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  z-index: 1;
+  div {
+    padding: 6px;
+    line-height: 20px;
   }
 `;
 
@@ -154,11 +218,11 @@ const Form = styled.form`
   padding-left: 8px;
   padding-right: 8px;
 `;
-const TitleForm = styled(Form)`
-  min-height: 20px;
-  padding: 10px 8px;
-  position: relative;
-`;
+// const TitleForm = styled(Form)`
+//   min-height: 20px;
+//   padding: 10px 8px;
+//   position: relative;
+// `;
 const EnterForm = styled(Form)`
   margin-top: 10px;
 `;

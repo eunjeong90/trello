@@ -16,6 +16,8 @@ const GlobalStyles = createGlobalStyle`
     font-weight: 400;
     letter-spacing: -0.15px;
     line-height: 1;
+    overflow-x: auto;
+
   }
   body, input, textarea, select, button, table {
     font-family: "Malgun Gothic", "맑은고딕", sans-serif;
