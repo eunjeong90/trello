@@ -4,21 +4,30 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { Title } from "styles/shared";
 import { BoardState } from "recoil/BoardState";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { IBoard } from "./Board";
 import { useRef } from "react";
+import { Link } from "react-router-dom";
+import useModal from "hook/useModal";
+import HeaderListModal from "./modal/HeaderListModal";
 
 interface IForm {
   title: string;
 }
 const BoardHeader = ({ boardTitle, boardIndex }: IBoard) => {
   const setBoards = useSetRecoilState(BoardState);
-  const titleRef = useRef<HTMLTextAreaElement | null>(null);
   const { handleSubmit, register, setFocus } = useForm<IForm>({
     defaultValues: { title: boardTitle },
   });
+  const BoardPopUp = useModal(`${boardTitle}-${boardIndex}`);
+  const {
+    modal: { isOpen },
+    isOpenModal,
+    isHideModal,
+  } = BoardPopUp;
+  const titleRef = useRef<HTMLTextAreaElement | null>(null);
   const { ref } = register("title");
-  console.log(register("title"));
+
   const onRenameTitleSubmit = ({ title }: IForm) => {
     setBoards((allBoards) => {
       const copyBoard = [...allBoards];
@@ -35,31 +44,52 @@ const BoardHeader = ({ boardTitle, boardIndex }: IBoard) => {
       handleSubmit(onRenameTitleSubmit)();
     }
   };
-  const onClick = () => {
+  const handleHeaderClickEvent = () => {
     setFocus("title");
     titleRef.current?.select();
   };
+  const handleBoardRemove = () => {
+    setBoards((prevBoard) => {
+      const copyBoards = [...prevBoard];
+      const targetRemoveIndex = copyBoards.findIndex(
+        ({ title }) => title === boardTitle
+      );
+      copyBoards.splice(targetRemoveIndex, 1);
+      return [...copyBoards];
+    });
+  };
+  const handleAllCardRemove = () => console.log("d");
+
   return (
-    <Header onSubmit={handleSubmit(onRenameTitleSubmit)}>
-      <TargetArea onClick={onClick} />
-      <Title
-        {...register("title", {
-          required: true,
-        })}
-        ref={(e) => {
-          ref(e);
-          titleRef.current = e;
-        }}
-        onKeyDown={handleBoardTitleKeyPress}
-      >
-        {boardTitle}
-      </Title>
-      <HeaderListIconBox>
-        <div>
-          <FontAwesomeIcon icon={faEllipsis} />
-        </div>
-      </HeaderListIconBox>
-    </Header>
+    <>
+      {isOpen && (
+        <HeaderListModal
+          handleBoardRemove={handleBoardRemove}
+          isHideModal={isHideModal}
+          handleAllCardRemove={handleAllCardRemove}
+        />
+      )}
+      <Header onSubmit={handleSubmit(onRenameTitleSubmit)}>
+        <TargetArea onClick={handleHeaderClickEvent} />
+        <Title
+          {...register("title", {
+            required: true,
+          })}
+          ref={(e) => {
+            ref(e);
+            titleRef.current = e;
+          }}
+          onKeyDown={handleBoardTitleKeyPress}
+        >
+          {boardTitle}
+        </Title>
+        <HeaderListIconBox onClick={isOpenModal}>
+          <div>
+            <FontAwesomeIcon icon={faEllipsis} />
+          </div>
+        </HeaderListIconBox>
+      </Header>
+    </>
   );
 };
 
@@ -86,8 +116,15 @@ const HeaderListIconBox = styled.div`
   right: 4px;
   top: 4px;
   z-index: 1;
+  cursor: pointer;
+  border-radius: 3px;
+  &:hover {
+    background-color: #b4b7bb6d;
+  }
   div {
     padding: 6px;
-    line-height: 20px;
+  }
+  svg {
+    color: #828181;
   }
 `;
