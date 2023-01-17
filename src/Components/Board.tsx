@@ -4,12 +4,10 @@ import { useForm } from "react-hook-form";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import DraggableCard from "./DraggableCard";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
-import React from "react";
+import BoardHeader from "./BoardHeader";
 
-interface IBoard {
-  boardContent: IBoardType[];
+export interface IBoard {
+  boardContent?: IBoardType[];
   boardTitle: string;
   boardIndex: number;
 }
@@ -23,12 +21,11 @@ interface IForm {
   data: string;
   title: string;
 }
-const Board = ({ boardContent, boardTitle, boardIndex }: IBoard) => {
+const Board = ({ boardContent, boardTitle: title, boardIndex }: IBoard) => {
   const setBoards = useSetRecoilState(BoardState);
   const { register, setValue, handleSubmit } = useForm<IForm>({
-    defaultValues: { task: "", title: "" },
+    defaultValues: { task: "" },
   });
-
   const onCreateCardSubmit = ({ task }: IForm) => {
     setBoards((prevBoard) => {
       const copyBoard = [...prevBoard];
@@ -65,29 +62,17 @@ const Board = ({ boardContent, boardTitle, boardIndex }: IBoard) => {
     });
   };
 
-  const onClick = (e: React.MouseEvent) => {
-    console.log(e);
-  };
   return (
     <>
-      <Draggable draggableId={boardTitle} index={boardIndex} key={boardTitle}>
+      <Draggable draggableId={title} index={boardIndex} key={title}>
         {(magic) => (
           <Wrapper
             ref={magic.innerRef}
             {...magic.dragHandleProps}
             {...magic.draggableProps}
           >
-            <Header>
-              <TargetArea onClick={onClick} />
-              <Title>{boardTitle}</Title>
-              <HeaderListIconBox>
-                <div>
-                  <FontAwesomeIcon icon={faEllipsis} />
-                </div>
-              </HeaderListIconBox>
-            </Header>
-
-            <Droppable droppableId={boardTitle} type="CARD">
+            <BoardHeader boardTitle={title} boardIndex={boardIndex} />
+            <Droppable droppableId={title} type="CARD">
               {(magic, snapshot) => (
                 <CardArea
                   isDraggingOver={snapshot.isDraggingOver}
@@ -95,7 +80,7 @@ const Board = ({ boardContent, boardTitle, boardIndex }: IBoard) => {
                   ref={magic.innerRef}
                   {...magic.droppableProps}
                 >
-                  {boardContent.map((toDo, index) => (
+                  {boardContent?.map((toDo, index) => (
                     <DraggableCard
                       toDoId={toDo.contentId}
                       toDoText={toDo.value}
@@ -111,9 +96,8 @@ const Board = ({ boardContent, boardTitle, boardIndex }: IBoard) => {
             <EnterForm onSubmit={handleSubmit(onCreateCardSubmit)}>
               <EnterCardTitle
                 {...register("task", { required: true })}
-                name="task"
                 onKeyDown={handleCardTitleKeyPress}
-                placeholder={`Enter a ${boardTitle.toLowerCase()} for this card...`}
+                placeholder={`Enter a ${title.toLowerCase()} for this card...`}
               />
             </EnterForm>
           </Wrapper>
@@ -141,22 +125,7 @@ const Wrapper = styled.div`
   white-space: nowrap;
   width: 272px; */
 `;
-const Header = styled.div`
-  flex: 0 0 auto;
-  min-height: 20px;
-  padding: 10px 8px;
-  position: relative;
-  padding-right: 36px;
-`;
-const TargetArea = styled.div`
-  bottom: 0;
-  cursor: pointer;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-`;
-const TextArea = styled.textarea`
+export const TextArea = styled.textarea`
   border-radius: 3px;
   box-shadow: none;
   font-weight: 600;
@@ -169,35 +138,6 @@ const TextArea = styled.textarea`
   resize: none;
   outline: none;
   border: none;
-`;
-const Title = styled(TextArea)`
-  font-size: 16px;
-  overflow: hidden;
-  overflow-wrap: break-word;
-  background: #0000;
-  border-radius: 3px;
-  box-shadow: none;
-  font-weight: 600;
-  height: 28px;
-  margin: -4px 0;
-  max-height: 256px;
-  min-height: 20px;
-  width: 100%;
-  padding: 4px 8px;
-  &:focus {
-    box-shadow: inset 0 0 0 2px #0079bf;
-    background: #ffffff;
-  }
-`;
-const HeaderListIconBox = styled.div`
-  position: absolute;
-  right: 4px;
-  top: 4px;
-  z-index: 1;
-  div {
-    padding: 6px;
-    line-height: 20px;
-  }
 `;
 
 const CardArea = styled.div<ICardAreaProps>`
