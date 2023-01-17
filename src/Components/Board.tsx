@@ -117,6 +117,7 @@ const Wrapper = styled.div`
   flex-direction: column; */
   padding-bottom: 20px;
   max-height: 100vh;
+  position: relative;
 
   /* display: inline-block;
   height: 100%;
