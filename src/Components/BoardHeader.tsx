@@ -4,10 +4,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { Title } from "styles/shared";
 import { BoardState } from "recoil/BoardState";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { IBoard } from "./Board";
 import { useRef } from "react";
-import { Link } from "react-router-dom";
 import useModal from "hook/useModal";
 import HeaderListModal from "./modal/HeaderListModal";
 
@@ -58,7 +57,18 @@ const BoardHeader = ({ boardTitle, boardIndex }: IBoard) => {
       return [...copyBoards];
     });
   };
-  const handleAllCardRemove = () => console.log("d");
+  const handleAllCardRemove = () => {
+    setBoards((prevBoards) => {
+      const copyBoard = [...prevBoards];
+      const { content, ...withoutContent } = copyBoard[boardIndex];
+      copyBoard[boardIndex] = {
+        ...withoutContent,
+        content: [],
+      };
+      return [...copyBoard];
+    });
+    isHideModal();
+  };
 
   return (
     <>
