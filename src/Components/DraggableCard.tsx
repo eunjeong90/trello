@@ -36,6 +36,7 @@ const DraggableCard = ({
           cardId={toDoId}
           cardIndex={index}
           isHideModal={isHideModal}
+          handleCardRemove={handleCardRemove}
         />
       )}
       <Draggable draggableId={toDoId + ""} index={index}>
@@ -48,9 +49,6 @@ const DraggableCard = ({
             onClick={() => isOpenModal()}
           >
             <span>{toDoText}</span>
-            <DeleteButton onClick={() => handleCardRemove(index)}>
-              x
-            </DeleteButton>
           </Card>
         )}
       </Draggable>
@@ -70,5 +68,8 @@ const Card = styled.div<{ isDragging: boolean }>`
     isDragging ? "0px 2px 5px rgba(0, 0, 0, 0.05)" : "none"};
   display: flex;
   justify-content: space-between;
+  &:hover {
+    background-color: #f4f4f4;
+  }
 `;
 const DeleteButton = styled.button``;

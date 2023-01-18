@@ -33,3 +33,12 @@ export const Title = styled(TextArea)`
     background: #ffffff;
   }
 `;
+export const CardTitle = styled(Title)`
+  font-size: 20px;
+  font-weight: 600;
+  height: 32px;
+  line-height: 24px;
+  margin: -4px -8px;
+  min-height: 24px;
+  padding: 4px 8px;
+`;
