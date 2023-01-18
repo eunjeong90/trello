@@ -26,13 +26,15 @@ const Board = ({ boardContent, boardTitle: title, boardIndex }: IBoard) => {
   const { register, setValue, handleSubmit } = useForm<IForm>({
     defaultValues: { task: "" },
   });
+
   const onCreateCardSubmit = ({ task }: IForm) => {
     setBoards((prevBoard) => {
       const copyBoard = [...prevBoard];
       const targetBoardContent = [...prevBoard[boardIndex].content];
       const newCard = {
         contentId: Date.now(),
-        value: task,
+        cardTitle: task,
+        value: "",
       };
       copyBoard[boardIndex] = {
         title: copyBoard[boardIndex].title,
@@ -83,9 +85,11 @@ const Board = ({ boardContent, boardTitle: title, boardIndex }: IBoard) => {
                   {boardContent?.map((toDo, index) => (
                     <DraggableCard
                       toDoId={toDo.contentId}
-                      toDoText={toDo.value}
+                      toDoText={toDo.cardTitle}
                       index={index}
                       key={toDo.contentId}
+                      boardTitle={title}
+                      boardIndex={boardIndex}
                       handleCardRemove={handleCardRemove}
                     />
                   ))}

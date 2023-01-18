@@ -2,6 +2,10 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { CardTitle } from "styles/shared";
+import { useForm } from "react-hook-form";
+import { useRef } from "react";
+import { useSetRecoilState } from "recoil";
+import { BoardState } from "recoil/BoardState";
 import { IBoard } from "Components/Board";
 
 interface ICardProps extends IBoard {
@@ -10,6 +14,9 @@ interface ICardProps extends IBoard {
   cardId: number;
   cardIndex: number;
   boardTitle: string;
+}
+interface IForm {
+  title: string;
 }
 
 const CardModal = ({
@@ -20,13 +27,59 @@ const CardModal = ({
   cardIndex,
   isHideModal,
 }: ICardProps) => {
+  const setBoards = useSetRecoilState(BoardState);
+  const { register, handleSubmit } = useForm<IForm>();
+  const titleRef = useRef<HTMLTextAreaElement | null>(null);
+  const { ref } = register("title");
+
+  const onRenameTitleSubmit = ({ title }: IForm) => {
+    setBoards((allBoards) => {
+      const copyBoard = [...allBoards];
+      const targetBoardContent = [...allBoards[boardIndex].content];
+      const targetCard = copyBoard[boardIndex].content[cardIndex];
+      const { cardTitle, ...rest } = targetCard;
+      const newCardTitle = {
+        ...rest,
+        cardTitle: title,
+      };
+      targetBoardContent[cardIndex] = {
+        ...newCardTitle,
+      };
+      copyBoard[boardIndex] = {
+        title: copyBoard[boardIndex].title,
+        content: [...targetBoardContent],
+      };
+      return [...copyBoard];
+    });
+  };
+  const handleBoardTitleKeyPress = (keyEvent: React.KeyboardEvent) => {
+    if (keyEvent.key === "Enter" && keyEvent.shiftKey === false) {
+      keyEvent.preventDefault();
+      handleSubmit(onRenameTitleSubmit)();
+    }
+  };
+  const handleHeaderClickEvent = () => {
+    titleRef.current?.select();
+  };
   return (
     <Wrapper>
       <ModalArea>
         <div>
           <CardBox>
-            <Header>
-              <CardTitle>{cardText}</CardTitle>
+            <Header onSubmit={handleSubmit(onRenameTitleSubmit)}>
+              <CardTitle
+                {...register("title", {
+                  required: true,
+                })}
+                ref={(e) => {
+                  ref(e);
+                  titleRef.current = e;
+                }}
+                onClick={handleHeaderClickEvent}
+                onKeyDown={handleBoardTitleKeyPress}
+              >
+                {cardText}
+              </CardTitle>
               <div>
                 <p>in list {boardTitle}</p>
               </div>
@@ -34,7 +87,7 @@ const CardModal = ({
             <MainColumn>main</MainColumn>
             <SideBar>side bar</SideBar>
           </CardBox>
-          <i role="presentation">
+          <i role="presentation" onClick={() => isHideModal()}>
             <FontAwesomeIcon icon={faXmark} />
           </i>
         </div>

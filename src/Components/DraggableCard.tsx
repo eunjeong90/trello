@@ -1,8 +1,11 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
+import useModal from "hook/useModal";
+import CardModal from "./modal/CardModal";
+import { IBoard } from "./Board";
 
-interface IToDoProps {
+interface IToDoProps extends IBoard {
   toDoId: number;
   toDoText: string;
   index: number;
@@ -10,25 +13,48 @@ interface IToDoProps {
 }
 
 const DraggableCard = ({
+  boardTitle,
+  boardIndex,
   toDoId,
   toDoText,
   index,
   handleCardRemove,
 }: IToDoProps) => {
+  const CardPopUp = useModal(toDoId);
+  const {
+    modal: { isOpen },
+    isOpenModal,
+    isHideModal,
+  } = CardPopUp;
   return (
-    <Draggable draggableId={toDoId + ""} index={index}>
-      {(magic, snapshot) => (
-        <Card
-          isDragging={snapshot.isDragging}
-          ref={magic.innerRef}
-          {...magic.dragHandleProps}
-          {...magic.draggableProps}
-        >
-          <span>{toDoText}</span>
-          <DeleteButton onClick={() => handleCardRemove(index)}>x</DeleteButton>
-        </Card>
+    <>
+      {isOpen && (
+        <CardModal
+          boardTitle={boardTitle}
+          boardIndex={boardIndex}
+          cardText={toDoText}
+          cardId={toDoId}
+          cardIndex={index}
+          isHideModal={isHideModal}
+        />
       )}
-    </Draggable>
+      <Draggable draggableId={toDoId + ""} index={index}>
+        {(magic, snapshot) => (
+          <Card
+            isDragging={snapshot.isDragging}
+            ref={magic.innerRef}
+            {...magic.dragHandleProps}
+            {...magic.draggableProps}
+            onClick={() => isOpenModal()}
+          >
+            <span>{toDoText}</span>
+            <DeleteButton onClick={() => handleCardRemove(index)}>
+              x
+            </DeleteButton>
+          </Card>
+        )}
+      </Draggable>
+    </>
   );
 };
 
