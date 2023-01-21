@@ -1,4 +1,4 @@
-import { Draggable, Droppable } from "react-beautiful-dnd";
+import { Droppable } from "react-beautiful-dnd";
 import { useRecoilValue } from "recoil";
 import { BoardState } from "recoil/BoardState";
 import styled from "styled-components";
@@ -7,7 +7,6 @@ import CreateBoard from "./CreateBoard";
 
 const Boards = () => {
   const boards = useRecoilValue(BoardState);
-  console.log(boards);
   return (
     <>
       <Wrapper>
@@ -17,19 +16,21 @@ const Boards = () => {
             type="BOARD"
             direction="horizontal"
           >
-            {(magic, snapshot) => (
-              <BoardsArea ref={magic.innerRef} {...magic.droppableProps}>
-                {boards.map((board, index) => (
-                  <div key={board.title}>
+            {(magic) => (
+              <>
+                <BoardsArea ref={magic.innerRef} {...magic.droppableProps}>
+                  {boards.map((board, index) => (
                     <Board
                       boardContent={board.content}
                       boardTitle={board.title}
                       boardIndex={index}
+                      key={board.title}
                     />
-                  </div>
-                ))}
+                  ))}
+                </BoardsArea>
+                {magic.placeholder}
                 <CreateBoard />
-              </BoardsArea>
+              </>
             )}
           </Droppable>
         </BoardsBox>
@@ -49,32 +50,29 @@ const Wrapper = styled.div`
   transition: margin 0.1s ease-in;
 `;
 const BoardsBox = styled.div`
-  flex-grow: 1;
-  position: relative;
+  display: flex;
+  margin-top: 10px;
+  margin-bottom: 8px;
+  overflow-y: hidden;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  width: 100%;
 `;
 
 const BoardsArea = styled.div`
-  width: 100%;
-  bottom: 0;
-  left: 0;
-  margin-top: 10px;
-  margin-bottom: 8px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding-bottom: 8px;
-  position: absolute;
-  right: 0;
-  top: 0;
-  -webkit-user-select: none;
+  /* width: 100%; */
+  /* -webkit-user-select: none;
   user-select: none;
-  white-space: nowrap;
+  white-space: nowrap; */
+  height: fit-content;
+  display: flex;
   > div {
     margin-right: 10px;
-    display: inline-block;
     height: 100%;
     margin: 0 4px;
     vertical-align: top;
     white-space: nowrap;
     width: 272px;
+    flex-shrink: 0;
   }
 `;

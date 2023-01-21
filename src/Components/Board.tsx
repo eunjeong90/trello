@@ -116,19 +116,9 @@ export default Board;
 const Wrapper = styled.div`
   background-color: ${({ theme }) => theme.boardColor};
   border-radius: 5px;
-  /* min-height: 300px; */
-  /* display: flex;
-  flex-direction: column; */
   padding-bottom: 20px;
   max-height: 100vh;
   position: relative;
-
-  /* display: inline-block;
-  height: 100%;
-  margin: 0 4px;
-  vertical-align: top;
-  white-space: nowrap;
-  width: 272px; */
 `;
 export const TextArea = styled.textarea`
   border-radius: 3px;
