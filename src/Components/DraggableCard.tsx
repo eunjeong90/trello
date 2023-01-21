@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
-import styled from "styled-components";
-import { Draggable } from "react-beautiful-dnd";
+import React from "react";
+import ModalPortal from "Portal";
 import useModal from "hook/useModal";
+import { Draggable } from "react-beautiful-dnd";
+import styled from "styled-components";
 import CardModal from "./modal/CardModal";
 import { IBoard } from "./Board";
 
@@ -29,15 +30,17 @@ const DraggableCard = ({
   return (
     <>
       {isOpen && (
-        <CardModal
-          boardTitle={boardTitle}
-          boardIndex={boardIndex}
-          cardText={toDoText}
-          cardId={toDoId}
-          cardIndex={index}
-          isHideModal={isHideModal}
-          handleCardRemove={handleCardRemove}
-        />
+        <ModalPortal>
+          <CardModal
+            boardTitle={boardTitle}
+            boardIndex={boardIndex}
+            cardText={toDoText}
+            cardId={toDoId}
+            cardIndex={index}
+            isHideModal={isHideModal}
+            handleCardRemove={handleCardRemove}
+          />
+        </ModalPortal>
       )}
       <Draggable draggableId={toDoId + ""} index={index}>
         {(magic, snapshot) => (
