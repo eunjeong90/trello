@@ -33,6 +33,7 @@ export const Title = styled(TextArea)`
     background: #ffffff;
   }
 `;
+export const BoardAddTitle = styled(Title);
 export const CardTitle = styled(Title)`
   font-size: 20px;
   font-weight: 600;
