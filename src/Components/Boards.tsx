@@ -55,6 +55,7 @@ const BoardsBox = styled.div`
   margin-bottom: 8px;
   overflow-y: hidden;
   overflow-x: auto;
+  flex-grow: 1;
   padding-bottom: 8px;
   width: 100%;
 `;
