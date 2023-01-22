@@ -43,3 +43,10 @@ export const CardTitle = styled(Title)`
   min-height: 24px;
   padding: 4px 8px;
 `;
+export const CheckListTextArea = styled(Title)`
+  resize: vertical;
+  height: 56px;
+  color: black;
+  font-size: 14px;
+  padding: 8px 12px;
+`;

@@ -12,6 +12,7 @@ import { useRef } from "react";
 import { useSetRecoilState } from "recoil";
 import { BoardState } from "recoil/BoardState";
 import { IBoard } from "Components/Board";
+import CheckList from "Components/AddToModal/CheckList";
 
 interface ICardProps extends IBoard {
   isHideModal(): void;
@@ -100,14 +101,15 @@ const CardModal = ({
             </Header>
             <MainColumn>
               <Description>
-                <div className="title">
+                <ContentTitleArea>
                   <i>
                     <FontAwesomeIcon icon={faPenToSquare} />
                   </i>
                   <strong>Description</strong>
-                </div>
+                </ContentTitleArea>
                 <div></div>
               </Description>
+              <CheckList />
             </MainColumn>
             <SideBar>
               <div className="actionList">
@@ -268,30 +270,30 @@ const SideBar = styled.div`
     }
   }
 `;
+export const ContentTitleArea = styled.div`
+  align-items: center;
+  display: flex;
+  min-height: 32px;
+  margin: 0 0 4px 40px;
+  padding: 8px 0;
+  position: relative;
+  i {
+    left: -40px;
+    top: 8px;
+    position: absolute;
+  }
+  strong {
+    display: inline-block;
+    margin: 0;
+    min-height: 18px;
+    min-width: 40px;
+    width: auto;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+  }
+`;
 const Description = styled.div`
   margin-bottom: 24px;
   position: relative;
-  div.title {
-    align-items: center;
-    display: flex;
-    min-height: 32px;
-    margin: 0 0 4px 40px;
-    padding: 8px 0;
-    position: relative;
-    i {
-      left: -40px;
-      top: 8px;
-      position: absolute;
-    }
-    strong {
-      display: inline-block;
-      margin: 0;
-      min-height: 18px;
-      min-width: 40px;
-      width: auto;
-      font-size: 16px;
-      line-height: 20px;
-      font-weight: 600;
-    }
-  }
 `;
