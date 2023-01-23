@@ -10,7 +10,7 @@ import { CardTitle } from "styles/shared";
 import { useForm } from "react-hook-form";
 import { useRef } from "react";
 import { useSetRecoilState } from "recoil";
-import { BoardState } from "recoil/BoardState";
+import { BoardState, IBoardType } from "recoil/BoardState";
 import { IBoard } from "Components/Board";
 import CheckList from "Components/AddToModal/CheckList";
 
@@ -20,6 +20,7 @@ interface ICardProps extends IBoard {
   cardText: string;
   cardId: number;
   cardIndex: number;
+  cardContent: IBoardType;
   boardTitle: string;
 }
 interface IForm {
@@ -32,6 +33,7 @@ const CardModal = ({
   cardText,
   cardId,
   cardIndex,
+  cardContent,
   isHideModal,
   handleCardRemove,
 }: ICardProps) => {
@@ -109,7 +111,14 @@ const CardModal = ({
                 </ContentTitleArea>
                 <div></div>
               </Description>
-              <CheckList />
+              <CheckList
+                boardTitle={boardTitle}
+                boardIndex={boardIndex}
+                cardText={cardText}
+                cardId={cardId}
+                cardIndex={cardIndex}
+                cardContent={cardContent}
+              />
             </MainColumn>
             <SideBar>
               <div className="actionList">

@@ -5,6 +5,12 @@ export interface IBoardType {
   contentId: number;
   cardTitle: string;
   value: string;
+  checkList: ICheckListType[];
+}
+interface ICheckListType {
+  checkId: number;
+  value: string;
+  state: boolean;
 }
 interface IBoardState {
   title: string;
@@ -24,6 +30,7 @@ export const BoardState = atom<Array<IBoardState>>({
           contentId: 1,
           cardTitle: "study",
           value: "",
+          checkList: [],
         },
       ],
     },
@@ -34,6 +41,7 @@ export const BoardState = atom<Array<IBoardState>>({
           contentId: 2,
           cardTitle: "someting",
           value: "",
+          checkList: [],
         },
       ],
     },
@@ -44,6 +52,7 @@ export const BoardState = atom<Array<IBoardState>>({
           contentId: 3,
           cardTitle: "eat",
           value: "",
+          checkList: [],
         },
       ],
     },

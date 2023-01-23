@@ -5,11 +5,13 @@ import { Draggable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import CardModal from "./modal/CardModal";
 import { IBoard } from "./Board";
+import { IBoardType } from "recoil/BoardState";
 
 interface IToDoProps extends IBoard {
   toDoId: number;
   toDoText: string;
   index: number;
+  toDo: IBoardType;
   handleCardRemove: (param: number) => void;
 }
 
@@ -19,6 +21,7 @@ const DraggableCard = ({
   toDoId,
   toDoText,
   index,
+  toDo,
   handleCardRemove,
 }: IToDoProps) => {
   const CardPopUp = useModal(toDoId);
@@ -27,11 +30,13 @@ const DraggableCard = ({
     isOpenModal,
     isHideModal,
   } = CardPopUp;
+
   return (
     <>
       {isOpen && (
         <ModalPortal>
           <CardModal
+            cardContent={toDo}
             boardTitle={boardTitle}
             boardIndex={boardIndex}
             cardText={toDoText}
