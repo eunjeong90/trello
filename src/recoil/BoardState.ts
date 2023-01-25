@@ -7,7 +7,7 @@ export interface IBoardType {
   value: string;
   checkList: ICheckListType[];
 }
-interface ICheckListType {
+export interface ICheckListType {
   checkId: number;
   value: string;
   state: boolean;

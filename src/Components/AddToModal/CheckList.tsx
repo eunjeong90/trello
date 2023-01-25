@@ -5,10 +5,9 @@ import styled from "styled-components";
 import { ContentTitleArea } from "Components/modal/CardModal";
 import { CheckListTextArea } from "styles/shared";
 import { useRecoilState } from "recoil";
-import { BoardState, IBoardType } from "recoil/BoardState";
+import { BoardState, IBoardType, ICheckListType } from "recoil/BoardState";
 import { useForm } from "react-hook-form";
 import { IBoard } from "Components/Board";
-import Boards from "Components/Boards";
 
 interface ICheckListProps extends IBoard {
   cardText: string;
@@ -17,10 +16,10 @@ interface ICheckListProps extends IBoard {
   boardTitle: string;
   cardContent: IBoardType;
 }
-interface IForm {
+interface IListForm {
   list: string;
-  checkBox: boolean;
 }
+
 const CheckList = ({
   boardTitle,
   boardIndex,
@@ -30,15 +29,14 @@ const CheckList = ({
   cardIndex,
 }: ICheckListProps) => {
   const [boards, setBoards] = useRecoilState(BoardState);
-  const { register, handleSubmit, setFocus, setValue } = useForm<IForm>({
-    defaultValues: { checkBox: false },
-  });
-  const [toggleAddList, setToggleAddList] = useState(false);
+  const { register, handleSubmit, setFocus, setValue } = useForm<IListForm>();
   const { checkList } = cardContent;
+  const [toggleAddList, setToggleAddList] = useState(false);
   useEffect(() => {
     setFocus("list");
   }, [toggleAddList, setFocus]);
-  const onCheckListSubmit = ({ list }: IForm) => {
+
+  const onCheckListSubmit = ({ list }: IListForm) => {
     console.log(list);
     setBoards((allBoards) => {
       const copyBoards = JSON.parse(JSON.stringify(allBoards));
@@ -64,7 +62,28 @@ const CheckList = ({
     }
   };
   const handleAddListState = () => setToggleAddList((prev) => !prev);
-  const handleCheckbox = ({ checkBox }: IForm) => console.log(checkBox);
+  const onCheckState = (itemId: number) => {
+    setBoards((allBoards) => {
+      const copyBoards = JSON.parse(JSON.stringify(allBoards));
+      const targetContent = copyBoards[boardIndex].content;
+      const list = copyBoards[boardIndex].content[cardIndex].checkList;
+      const newState = list.map((item: ICheckListType) => {
+        if (itemId === item.checkId) {
+          return { ...item, state: !item.state };
+        } else {
+          return item;
+        }
+      });
+      const { checkList, ...rest } = targetContent[cardIndex];
+      targetContent[cardIndex] = {
+        ...rest,
+        checkList: newState,
+      };
+      return [...copyBoards];
+    });
+  };
+  const stateArr = checkList?.map((item) => item.state);
+  const currentState = stateArr.filter((item) => item);
   return (
     <CheckWrapper>
       <ContentTitleArea>
@@ -75,27 +94,29 @@ const CheckList = ({
       </ContentTitleArea>
       <ContentBox>
         <ProgressBar>
-          <span>0%</span>
+          <span>
+            {stateArr.length === 0
+              ? "0"
+              : Math.round((currentState.length / stateArr.length) * 100)}
+            &#37;
+          </span>
           <div className="progress-bar">
-            <div className="progress-current-bar"></div>
+            <CurrentBar
+              className="progress-current-bar"
+              width={(currentState.length / stateArr.length) * 100 + "%"}
+            ></CurrentBar>
           </div>
         </ProgressBar>
         {checkList?.map((item, index) => (
-          <ListView
-            key={cardId + index}
-            onSubmit={handleSubmit(handleCheckbox)}
-          >
-            <CheckBox>
-              <input
-                type="checkbox"
-                value={item.value}
-                {...register("checkBox", {
-                  onChange: (e) => console.log(e.currentTarget.checked),
-                })}
-              />
-            </CheckBox>
+          <ListView key={cardId + index}>
+            <span>{item.state === true ? "chcked" : ""}</span>
             <ListItem>
-              <span>{item.value}</span>
+              <span
+                onClick={() => onCheckState(item.checkId)}
+                role="presentation"
+              >
+                {item.value}
+              </span>
             </ListItem>
           </ListView>
         ))}
@@ -220,4 +241,15 @@ const ProgressBar = styled.div`
     transition-property: width, background-color;
     transition-timing-function: ease-in;
   }
+`;
+const CurrentBar = styled.div<{ width: string }>`
+  background-color: #5ba4cf;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transition-duration: 0.14s;
+  transition-property: width, background-color;
+  transition-timing-function: ease-in;
+  width: ${(props) => props.width};
 `;
