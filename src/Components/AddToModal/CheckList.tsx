@@ -19,6 +19,7 @@ interface ICheckListProps extends IBoard {
 }
 interface IForm {
   list: string;
+  checkBox: boolean;
 }
 const CheckList = ({
   boardTitle,
@@ -29,9 +30,11 @@ const CheckList = ({
   cardIndex,
 }: ICheckListProps) => {
   const [boards, setBoards] = useRecoilState(BoardState);
-  const { register, handleSubmit, setFocus, setValue } = useForm<IForm>();
+  const { register, handleSubmit, setFocus, setValue } = useForm<IForm>({
+    defaultValues: { checkBox: false },
+  });
   const [toggleAddList, setToggleAddList] = useState(false);
-
+  const { checkList } = cardContent;
   useEffect(() => {
     setFocus("list");
   }, [toggleAddList, setFocus]);
@@ -45,17 +48,11 @@ const CheckList = ({
         value: list,
         state: false,
       };
-      const { content, ...title } = copyBoards[boardIndex];
       const { checkList, ...rest } = targetBoardContent[cardIndex];
-      const newInsertCheckContent = (targetBoardContent[cardIndex] = {
+      targetBoardContent[cardIndex] = {
         ...rest,
         checkList: [...checkList, newCheckList],
-      });
-      copyBoards[boardIndex] = {
-        ...title,
-        content: [...targetBoardContent, newInsertCheckContent],
       };
-      console.log(targetBoardContent);
       return [...copyBoards];
     });
     setValue("list", "");
@@ -67,8 +64,7 @@ const CheckList = ({
     }
   };
   const handleAddListState = () => setToggleAddList((prev) => !prev);
-  // console.log(cardContent.checkList);
-  // console.log(boards);
+  const handleCheckbox = ({ checkBox }: IForm) => console.log(checkBox);
   return (
     <CheckWrapper>
       <ContentTitleArea>
@@ -78,10 +74,25 @@ const CheckList = ({
         <strong>Checklist</strong>
       </ContentTitleArea>
       <ContentBox>
-        {cardContent.checkList?.map((item, index) => (
-          <ListView key={cardId + index}>
+        <ProgressBar>
+          <span>0%</span>
+          <div className="progress-bar">
+            <div className="progress-current-bar"></div>
+          </div>
+        </ProgressBar>
+        {checkList?.map((item, index) => (
+          <ListView
+            key={cardId + index}
+            onSubmit={handleSubmit(handleCheckbox)}
+          >
             <CheckBox>
-              <input type="checkbox" name="" id="" />
+              <input
+                type="checkbox"
+                value={item.value}
+                {...register("checkBox", {
+                  onChange: (e) => console.log(e.currentTarget.checked),
+                })}
+              />
             </CheckBox>
             <ListItem>
               <span>{item.value}</span>
@@ -138,7 +149,7 @@ const ContentBox = styled.div`
     white-space: normal;
   }
 `;
-const ListView = styled.div`
+const ListView = styled.form`
   display: flex;
   align-items: center;
 
@@ -176,5 +187,37 @@ const ListItem = styled.div`
   width: 100%;
   span {
     min-height: 20px;
+  }
+`;
+const ProgressBar = styled.div`
+  margin-bottom: 6px;
+  position: relative;
+  span {
+    font-size: 11px;
+    left: 0;
+    line-height: 10px;
+    position: absolute;
+    text-align: center;
+    top: -1px;
+    width: 32px;
+  }
+  .progress-bar {
+    background: #091e4214;
+    border-radius: 4px;
+    clear: both;
+    height: 8px;
+    margin: 0 0 0 40px;
+    overflow: hidden;
+    position: relative;
+  }
+  .progress-current-bar {
+    background-color: #5ba4cf;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    top: 0;
+    transition-duration: 0.14s;
+    transition-property: width, background-color;
+    transition-timing-function: ease-in;
   }
 `;
