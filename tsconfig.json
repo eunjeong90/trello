@@ -26,6 +26,6 @@
     ],
     "baseUrl": "./src"
   },
-  "include": ["src", "styled-components.ts"],
+  "include": ["src", "src/styled.d.ts"],
   "exclude": ["node_modules/*"]
 }
