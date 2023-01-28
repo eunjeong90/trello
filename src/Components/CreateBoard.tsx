@@ -76,6 +76,7 @@ const CreateBox = styled.div`
   min-height: 40px;
   height: fit-content;
   padding: 4px 0;
+  margin-left: 5px;
   transition: background 85ms ease-in, opacity 40ms ease-in,
     border-color 85ms ease-in;
 `;

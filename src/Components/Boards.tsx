@@ -61,10 +61,6 @@ const BoardsBox = styled.div`
 `;
 
 const BoardsArea = styled.div`
-  /* width: 100%; */
-  /* -webkit-user-select: none;
-  user-select: none;
-  white-space: nowrap; */
   height: fit-content;
   display: flex;
   > div {

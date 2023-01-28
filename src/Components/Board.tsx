@@ -35,6 +35,7 @@ const Board = ({ boardContent, boardTitle: title, boardIndex }: IBoard) => {
         contentId: Date.now(),
         cardTitle: task,
         value: "",
+        checkList: [],
       };
       copyBoard[boardIndex] = {
         title: copyBoard[boardIndex].title,
@@ -84,6 +85,7 @@ const Board = ({ boardContent, boardTitle: title, boardIndex }: IBoard) => {
                 >
                   {boardContent?.map((toDo, index) => (
                     <DraggableCard
+                      toDo={toDo}
                       toDoId={toDo.contentId}
                       toDoText={toDo.cardTitle}
                       index={index}
@@ -100,7 +102,7 @@ const Board = ({ boardContent, boardTitle: title, boardIndex }: IBoard) => {
             <EnterForm onSubmit={handleSubmit(onCreateCardSubmit)}>
               <EnterCardTitle
                 {...register("task", { required: true })}
-                onKeyDown={handleCardTitleKeyPress}
+                onKeyPress={handleCardTitleKeyPress}
                 placeholder={`Enter a ${title.toLowerCase()} for this card...`}
               />
             </EnterForm>
@@ -142,7 +144,6 @@ const CardArea = styled.div<ICardAreaProps>`
       : draggingFromThisWith
       ? "#b2bec3"
       : "transparent"};
-  /* flex-grow: 1; */
   border-radius: 5px;
   transition: background-color 0.2s ease-in-out;
   padding: 1px 8px;
@@ -153,11 +154,7 @@ const Form = styled.form`
   padding-left: 8px;
   padding-right: 8px;
 `;
-// const TitleForm = styled(Form)`
-//   min-height: 20px;
-//   padding: 10px 8px;
-//   position: relative;
-// `;
+
 const EnterForm = styled(Form)`
   margin-top: 10px;
 `;

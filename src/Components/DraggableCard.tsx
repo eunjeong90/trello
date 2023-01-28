@@ -80,4 +80,3 @@ const Card = styled.div<{ isDragging: boolean }>`
     background-color: #f4f4f4;
   }
 `;
-const DeleteButton = styled.button``;

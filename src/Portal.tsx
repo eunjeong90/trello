@@ -16,10 +16,7 @@ const ModalPortal = ({ children }: IModalPortal) => {
   }, []);
   if (ref.current && mounted) {
     return createPortal(
-      <div className="modal-container">
-        <div className="modal-background" role="presentation" />
-        {children}
-      </div>,
+      <div className="modal-container">{children}</div>,
       ref.current
     );
   }
