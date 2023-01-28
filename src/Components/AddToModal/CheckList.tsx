@@ -4,7 +4,7 @@ import { faListCheck } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { ContentTitleArea } from "Components/modal/CardModal";
 import { CheckListTextArea } from "styles/shared";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { BoardState, IBoardType, ICheckListType } from "recoil/BoardState";
 import { useForm } from "react-hook-form";
 import { IBoard } from "Components/Board";
@@ -21,14 +21,12 @@ interface IListForm {
 }
 
 const CheckList = ({
-  boardTitle,
   boardIndex,
-  cardText,
   cardContent,
   cardId,
   cardIndex,
 }: ICheckListProps) => {
-  const [boards, setBoards] = useRecoilState(BoardState);
+  const setBoards = useSetRecoilState(BoardState);
   const { register, handleSubmit, setFocus, setValue } = useForm<IListForm>();
   const { checkList } = cardContent;
   const [toggleAddList, setToggleAddList] = useState(false);
@@ -93,7 +91,6 @@ const CheckList = ({
   };
   const stateArr = checkList?.map((item) => item.state);
   const currentState = stateArr.filter((item) => item);
-  console.log(stateArr);
   return (
     <CheckWrapper>
       <ContentTitleArea>
@@ -117,19 +114,21 @@ const CheckList = ({
             ></CurrentBar>
           </div>
         </ProgressBar>
-        {checkList?.map((item, index) => (
-          <ListView key={cardId + index}>
-            <ListItem>
-              <CheckBox
-                onClick={() => onCheckState(item.checkId)}
-                bgColor={item.state ? "#4492bf" : "#fafbfc"}
-              >
-                <Checked isChecked={item.state ? "1" : "0"} />
-              </CheckBox>
-              <span>{item.value}</span>
-            </ListItem>
-          </ListView>
-        ))}
+        <CheckListArea>
+          {checkList?.map((item, index) => (
+            <ListView key={cardId + index}>
+              <ListItem>
+                <CheckBox
+                  onClick={() => onCheckState(item.checkId)}
+                  checked={item.state}
+                >
+                  <Checked isChecked={item.state ? "1" : "0"} />
+                </CheckBox>
+                <span>{item.value}</span>
+              </ListItem>
+            </ListView>
+          ))}
+        </CheckListArea>
         {toggleAddList ? (
           <form onSubmit={handleSubmit(onCheckListSubmit)}>
             <CheckListTextArea
@@ -137,12 +136,12 @@ const CheckList = ({
               onKeyPress={handleBoardTitleKeyPress}
               placeholder="Add an item"
             />
-            <div>
+            <CheckListButtonArea>
               <input type="submit" value="Add" />
               <button type="button" onClick={handleAddListState}>
                 Cancel
               </button>
-            </div>
+            </CheckListButtonArea>
           </form>
         ) : (
           <button type="button" onClick={handleAddListState}>
@@ -180,6 +179,9 @@ const ContentBox = styled.div`
     white-space: normal;
   }
 `;
+const CheckListArea = styled.div`
+  margin: 10px 0;
+`;
 const ListView = styled.form`
   display: flex;
   align-items: center;
@@ -191,10 +193,12 @@ const ListView = styled.form`
     background-color;
   transition-timing-function: ease-in;
 `;
-const CheckBox = styled.div<{ bgColor: string }>`
-  background-color: ${({ bgColor }) => bgColor};
+const CheckBox = styled.div<{ checked: boolean }>`
   border-radius: 2px;
   box-shadow: inset 0 0 0 2px #dfe1e6;
+  box-shadow: ${({ checked }) =>
+    checked ? "none" : "inset 0 0 0 2px #dfe1e6"};
+  background-color: ${({ checked }) => (checked ? "#4492bf" : "#fafbfc")};
   cursor: pointer;
   flex-shrink: 0;
   height: 16px;
@@ -266,4 +270,18 @@ const CurrentBar = styled.div<{ width: string }>`
   transition-property: width, background-color;
   transition-timing-function: ease-in;
   width: ${(props) => props.width};
+`;
+const CheckListButtonArea = styled.div`
+  margin-top: 5px;
+  input[type="submit"] {
+    padding: 6px 12px;
+    text-align: center;
+    border: none;
+    background-color: #0079bf;
+    border-radius: 3px;
+    color: #ffffff;
+    margin-right: 5px;
+    font-size: 14px;
+    line-height: 20px;
+  }
 `;
