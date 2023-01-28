@@ -28,7 +28,7 @@ export const BoardState = atom<Array<IBoardState>>({
       content: [
         {
           contentId: 1,
-          cardTitle: "study",
+          cardTitle: "diet",
           value: "",
           checkList: [],
         },
@@ -39,7 +39,7 @@ export const BoardState = atom<Array<IBoardState>>({
       content: [
         {
           contentId: 2,
-          cardTitle: "someting",
+          cardTitle: "create lead me",
           value: "",
           checkList: [],
         },
@@ -50,7 +50,7 @@ export const BoardState = atom<Array<IBoardState>>({
       content: [
         {
           contentId: 3,
-          cardTitle: "eat",
+          cardTitle: "first build",
           value: "",
           checkList: [],
         },
