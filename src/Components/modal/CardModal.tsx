@@ -92,7 +92,7 @@ const CardModal = ({
                     titleRef.current = e;
                   }}
                   onClick={handleHeaderClickEvent}
-                  onKeyDown={handleBoardTitleKeyPress}
+                  onKeyPress={handleBoardTitleKeyPress}
                 >
                   {cardText}
                 </CardTitle>

@@ -134,7 +134,7 @@ const CheckList = ({
           <form onSubmit={handleSubmit(onCheckListSubmit)}>
             <CheckListTextArea
               {...register("list")}
-              onKeyDown={handleBoardTitleKeyPress}
+              onKeyPress={handleBoardTitleKeyPress}
               placeholder="Add an item"
             />
             <div>

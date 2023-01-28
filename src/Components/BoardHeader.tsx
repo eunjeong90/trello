@@ -89,7 +89,7 @@ const BoardHeader = ({ boardTitle, boardIndex }: IBoard) => {
             ref(e);
             titleRef.current = e;
           }}
-          onKeyDown={handleBoardTitleKeyPress}
+          onKeyPress={handleBoardTitleKeyPress}
         >
           {boardTitle}
         </Title>
