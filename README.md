@@ -1,7 +1,8 @@
 # `mini project - Trello clone`
 
 ## introduction 👩🏻‍💻 
-트렐로를 클론코딩한 프로젝트입니다. **[trello](https://eunjeong90.github.io/trello/ "trello link") (https://eunjeong90.github.io/trello)** _****_  
+트렐로를 클론코딩한 프로젝트입니다. **[trello](https://eunjeong90.github.io/trello/ "trello link") (https://eunjeong90.github.io/trello)**  
+
 칸반보드인 트렐로는 진행 중인 프로젝트나 일정을 시각화하여 보다 쉽게 흐름을 포착하도록 만들어진 앱입니다. 특히 포스트잇을 떼었다 다시 붙이는 방식에서 착안한 트렐로의 DnD(drag and drop)가 해당 프로젝트의 진행하는 가장 중요한 요소였습니다. DnD는 실제 트렐로 제작사인 Atlassian가 배포한 react-beautiful-dnd를 통해 구현하였고, 각 board에 들어오는 list와 list안의 데이터를 실제 trello와 유사하게 보여질 수 있도록 처리하였습니다. 이를 통해 React에서 불변성을 지키며 데이터를 다루는 것을 학습할 수 있었습니다.  
 
 ### Dependencies
@@ -56,6 +57,84 @@
     ┗ tsconfig.json  
 
 ### Main Feature 👀
+*****
+#### **Drag and Drap**
+![ezgif com-gif-maker-_1_](https://user-images.githubusercontent.com/89186225/215263655-d71716f1-4cbe-4191-a076-c295f3eb323b.gif)
+`src/components/Main.tsx`
+    
+    const setBoards = useSetRecoilState(BoardState);
+
+    const onDragEnd = (info: DropResult) => {
+      const {
+        source: { droppableId: startBoardId, index: startIndex },
+        destination: endBoard,
+        type,
+      } = info;
+      const sameBoard = endBoard?.droppableId === startBoardId;
+      const otherBoard = endBoard?.droppableId !== startBoardId;
+
+      if (!endBoard) return;
+      if (type === "BOARD") {
+        setBoards((allBoards) => {
+          const boardCopy = [...allBoards];
+          const targetIndex = boardCopy[startIndex];
+          boardCopy.splice(startIndex, 1);
+          boardCopy.splice(endBoard.index, 0, targetIndex);
+          return boardCopy;
+        });
+      }
+      switch (type === "CARD") {
+        case sameBoard:
+          setBoards((allBoards) => {
+            const boardCopy = [...allBoards];
+            const targetIndex = boardCopy.findIndex(
+              ({ title }) => title === startBoardId
+            );
+            const targetCards = [...boardCopy[targetIndex].content];
+            const targetCard = targetCards[startIndex];
+            const [removed] = targetCards.splice(startIndex, 1);
+            targetCards.splice(endBoard?.index, 0, targetCard);
+            boardCopy[targetIndex] = {
+              title: startBoardId,
+              content: [...targetCards],
+            };
+            return [...boardCopy];
+          });
+          break;
+        case otherBoard:
+          setBoards((allBoards) => {
+            const boardCopy = [...allBoards];
+
+            const firstIndex = boardCopy.findIndex(
+              ({ title }) => title === startBoardId
+            );
+            const firstBoard = [...boardCopy[firstIndex].content];
+            const firstCard = firstBoard[startIndex];
+
+            const finishedIndex = boardCopy.findIndex(
+              ({ title }) => title === endBoard.droppableId
+            );
+            const finishedBoard = [...boardCopy[finishedIndex].content];
+            firstBoard.splice(startIndex, 1);
+            finishedBoard.splice(endBoard.index, 0, firstCard);
+            
+            boardCopy[firstIndex] = {
+              title: startBoardId,
+              content: [...firstBoard],
+            };
+            boardCopy[finishedIndex] = {
+              title: endBoard.droppableId,
+              content: [...finishedBoard],
+            };
+            return [...boardCopy];
+          });
+          break;
+      }
+    };
+> 하나의 큰 영역인 board끼리의 DnD, board 안에 담긴 list들의 DnD, 그리고 서로 다른 board의 list들을 자유롭게 DnD 할 수 있습니다.
+*****
+#### **간편한 생성, 수정과 삭제**
+![ezgif com-gif-maker](https://user-images.githubusercontent.com/89186225/215263047-65e72577-f193-460f-a03f-66a709c04cfd.gif)
 `src/recoil/BoardsState.ts`
 
     import { recoilPersist } from "recoil-persist";
@@ -81,6 +160,6 @@
         ...
       effects_UNSTABLE: [persistAtom],
     });
-![화면-기록-2023-01-28-오후-7 39 38](https://user-images.githubusercontent.com/89186225/215262450-e39f45f8-5480-488e-803b-3e9a83081a92.gif)
+
 > 해당 클론 프로젝트의 데이터는 localstorage에 저장됩니다. 간단하게 테스트 해보세요!  
 > trello의 기본 템플릿과 같이 첫 상태로 board는 'To do', 'Doing', 'Done'의 title을 가지고 있습니다. 해당 title 부분을 클릭하면 원하는 값으로 변경할 수 있으며 삭제도 가능합니다. 모든 board를 삭제하더라도 Add another list를 클릭하여 새로운 board를 추가할 수 있습니다.
