@@ -49,4 +49,5 @@ export const CheckListTextArea = styled(Title)`
   color: black;
   font-size: 14px;
   padding: 8px 12px;
+  margin-top: 5px;
 `;
