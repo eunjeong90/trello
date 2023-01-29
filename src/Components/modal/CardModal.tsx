@@ -1,3 +1,7 @@
+import React, { useRef } from "react";
+import { useForm } from "react-hook-form";
+import { useSetRecoilState } from "recoil";
+import { BoardState, IBoardType } from "recoil/BoardState";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -7,13 +11,9 @@ import {
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import { CardTitle } from "styles/shared";
-import { useForm } from "react-hook-form";
-import { useRef } from "react";
-import { useSetRecoilState } from "recoil";
-import { BoardState, IBoardType } from "recoil/BoardState";
 import { IBoard } from "Components/Board";
 import CheckList from "Components/AddToModal/CheckList";
-
+import TextEditor from "Components/AddToModal/TextEditor";
 interface ICardProps extends IBoard {
   isHideModal(): void;
   handleCardRemove(param: number): void;
@@ -109,7 +109,9 @@ const CardModal = ({
                   </i>
                   <strong>Description</strong>
                 </ContentTitleArea>
-                <div></div>
+                <div>
+                  <TextEditor />
+                </div>
               </Description>
               <CheckList
                 boardTitle={boardTitle}
