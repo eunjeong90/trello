@@ -110,7 +110,11 @@ const CardModal = ({
                   <strong>Description</strong>
                 </ContentTitleArea>
                 <div>
-                  <TextEditor />
+                  <TextEditor
+                    boardIndex={boardIndex}
+                    cardIndex={cardIndex}
+                    boardTitle={boardTitle}
+                  />
                 </div>
               </Description>
               <CheckList

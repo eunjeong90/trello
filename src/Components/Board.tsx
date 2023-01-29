@@ -34,7 +34,7 @@ const Board = ({ boardContent, boardTitle: title, boardIndex }: IBoard) => {
       const newCard = {
         contentId: Date.now(),
         cardTitle: task,
-        value: "",
+        value: { blocks: [], entityMap: {} },
         checkList: [],
       };
       copyBoard[boardIndex] = {

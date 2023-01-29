@@ -1,10 +1,11 @@
 import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
+import { RawDraftContentState } from "draft-js";
 
 export interface IBoardType {
   contentId: number;
   cardTitle: string;
-  value: string;
+  value: RawDraftContentState;
   checkList: ICheckListType[];
 }
 export interface ICheckListType {
@@ -29,7 +30,10 @@ export const BoardState = atom<Array<IBoardState>>({
         {
           contentId: 1,
           cardTitle: "diet",
-          value: "",
+          value: {
+            blocks: [],
+            entityMap: {},
+          },
           checkList: [],
         },
       ],
@@ -40,7 +44,10 @@ export const BoardState = atom<Array<IBoardState>>({
         {
           contentId: 2,
           cardTitle: "create lead me",
-          value: "",
+          value: {
+            blocks: [],
+            entityMap: {},
+          },
           checkList: [],
         },
       ],
@@ -51,7 +58,10 @@ export const BoardState = atom<Array<IBoardState>>({
         {
           contentId: 3,
           cardTitle: "first build",
-          value: "",
+          value: {
+            blocks: [],
+            entityMap: {},
+          },
           checkList: [],
         },
       ],
