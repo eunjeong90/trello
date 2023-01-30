@@ -182,12 +182,12 @@ const EditorWrap = styled.div<{ addText: boolean }>`
 
   .DraftEditor-editorContainer .public-DraftEditor-content h2 {
     font-weight: bolder !important;
-    font-size: 1.5em !important;
+    font-size: 1.7em !important;
   }
 
   .DraftEditor-editorContainer .public-DraftEditor-content h3 {
     font-weight: bolder !important;
-    font-size: 1.7em !important;
+    font-size: 1.5em !important;
   }
 
   .DraftEditor-editorContainer .public-DraftEditor-content h4 {
