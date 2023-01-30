@@ -178,6 +178,13 @@ const ContentBox = styled.div`
     transition-timing-function: ease;
     white-space: normal;
   }
+  > form {
+    margin-left: 40px;
+  }
+  > button {
+    margin-left: 40px;
+    margin-top: 5px;
+  }
 `;
 const CheckListArea = styled.div`
   margin: 10px 0;
