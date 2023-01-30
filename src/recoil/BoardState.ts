@@ -29,7 +29,7 @@ export const BoardState = atom<Array<IBoardState>>({
       content: [
         {
           contentId: 1,
-          cardTitle: "diet",
+          cardTitle: "공부",
           value: {
             blocks: [],
             entityMap: {},
@@ -43,7 +43,7 @@ export const BoardState = atom<Array<IBoardState>>({
       content: [
         {
           contentId: 2,
-          cardTitle: "create lead me",
+          cardTitle: "프로젝트 작업",
           value: {
             blocks: [],
             entityMap: {},
@@ -57,7 +57,7 @@ export const BoardState = atom<Array<IBoardState>>({
       content: [
         {
           contentId: 3,
-          cardTitle: "first build",
+          cardTitle: "운동",
           value: {
             blocks: [],
             entityMap: {},
