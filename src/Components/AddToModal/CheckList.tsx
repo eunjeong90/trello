@@ -54,6 +54,7 @@ const CheckList = ({
       return [...copyBoards];
     });
     setValue("list", "");
+    setFocus("list");
   };
   const handleBoardTitleKeyPress = (keyEvent: React.KeyboardEvent) => {
     if (keyEvent.key === "Enter" && keyEvent.shiftKey === false) {
@@ -64,6 +65,7 @@ const CheckList = ({
   const handleAddListState = () => setToggleAddList((prev) => !prev);
 
   const onCheckState = (itemId: number) => {
+    setToggleAddList(false);
     setBoards((allBoards) => {
       const copyBoards = JSON.parse(JSON.stringify(allBoards));
       const targetContent = copyBoards[boardIndex].content;
@@ -92,7 +94,7 @@ const CheckList = ({
   const stateArr = checkList?.map((item) => item.state);
   const currentState = stateArr.filter((item) => item);
   return (
-    <CheckWrapper>
+    <>
       <ContentTitleArea>
         <i>
           <FontAwesomeIcon icon={faListCheck} />
@@ -111,7 +113,7 @@ const CheckList = ({
             <CurrentBar
               className="progress-current-bar"
               width={(currentState.length / stateArr.length) * 100 + "%"}
-            ></CurrentBar>
+            />
           </div>
         </ProgressBar>
         <CheckListArea>
@@ -149,13 +151,12 @@ const CheckList = ({
           </button>
         )}
       </ContentBox>
-    </CheckWrapper>
+    </>
   );
 };
 
 export default CheckList;
 
-const CheckWrapper = styled.div``;
 const ContentBox = styled.div`
   button {
     border-radius: 3px;
@@ -240,7 +241,7 @@ const ProgressBar = styled.div`
   position: relative;
   span {
     font-size: 11px;
-    left: 0;
+    left: -6px;
     line-height: 10px;
     position: absolute;
     text-align: center;
@@ -256,19 +257,10 @@ const ProgressBar = styled.div`
     overflow: hidden;
     position: relative;
   }
-  .progress-current-bar {
-    background-color: #5ba4cf;
-    bottom: 0;
-    left: 0;
-    position: absolute;
-    top: 0;
-    transition-duration: 0.14s;
-    transition-property: width, background-color;
-    transition-timing-function: ease-in;
-  }
 `;
 const CurrentBar = styled.div<{ width: string }>`
-  background-color: #5ba4cf;
+  background-color: ${({ width }) =>
+    width === "100%" ? "#61bd4f" : "#5ba4cf"};
   bottom: 0;
   left: 0;
   position: absolute;
@@ -276,7 +268,7 @@ const CurrentBar = styled.div<{ width: string }>`
   transition-duration: 0.14s;
   transition-property: width, background-color;
   transition-timing-function: ease-in;
-  width: ${(props) => props.width};
+  width: ${({ width }) => width};
 `;
 const CheckListButtonArea = styled.div`
   margin-top: 5px;
