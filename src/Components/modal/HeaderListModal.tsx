@@ -6,19 +6,25 @@ export interface IList {
   handleBoardRemove: () => void;
   handleAllCardRemove: () => void;
   isHideModal: () => void;
+  setToggle: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const HeaderListModal = ({
   handleBoardRemove,
   handleAllCardRemove,
   isHideModal,
+  setToggle,
 }: IList) => {
+  const handleClose = () => {
+    setToggle(false);
+    isHideModal();
+  };
   return (
     <BoardPopUp>
       <div>
         <PopHeader>
           <span>List actions</span>
-          <i role="presentation" onClick={() => isHideModal()}>
+          <i role="presentation" onClick={handleClose}>
             <FontAwesomeIcon icon={faXmark} />
           </i>
         </PopHeader>

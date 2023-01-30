@@ -6,7 +6,7 @@ import { Title } from "styles/shared";
 import { BoardState } from "recoil/BoardState";
 import { useSetRecoilState } from "recoil";
 import { IBoard } from "./Board";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import useModal from "hook/useModal";
 import HeaderListModal from "./modal/HeaderListModal";
 
@@ -24,6 +24,7 @@ const BoardHeader = ({ boardTitle, boardIndex }: IBoard) => {
     isOpenModal,
     isHideModal,
   } = BoardPopUp;
+  const [toggle, setToggle] = useState(isOpen);
   const titleRef = useRef<HTMLTextAreaElement | null>(null);
   const { ref } = register("title");
 
@@ -67,7 +68,18 @@ const BoardHeader = ({ boardTitle, boardIndex }: IBoard) => {
       };
       return [...copyBoard];
     });
+    setToggle(false);
     isHideModal();
+  };
+  const handleCloseToggle = () => {
+    if (toggle === true) {
+      setToggle(false);
+      isHideModal();
+    } else {
+      setToggle(true);
+      isOpenModal();
+    }
+    console.log(toggle);
   };
 
   return (
@@ -77,6 +89,7 @@ const BoardHeader = ({ boardTitle, boardIndex }: IBoard) => {
           handleBoardRemove={handleBoardRemove}
           isHideModal={isHideModal}
           handleAllCardRemove={handleAllCardRemove}
+          setToggle={setToggle}
         />
       )}
       <Header onSubmit={handleSubmit(onRenameTitleSubmit)}>
@@ -93,7 +106,7 @@ const BoardHeader = ({ boardTitle, boardIndex }: IBoard) => {
         >
           {boardTitle}
         </Title>
-        <HeaderListIconBox onClick={isOpenModal}>
+        <HeaderListIconBox onClick={handleCloseToggle}>
           <div>
             <FontAwesomeIcon icon={faEllipsis} />
           </div>
