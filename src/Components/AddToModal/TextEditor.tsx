@@ -1,11 +1,13 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRecoilState } from "recoil";
 import { BoardState } from "recoil/BoardState";
 import {
+  ContentState,
   convertFromRaw,
   convertToRaw,
   Editor,
   EditorState,
+  RawDraftContentState,
   RichUtils,
 } from "draft-js";
 import "draft-js/dist/Draft.css";
@@ -56,6 +58,14 @@ const TextEditor = ({ boardIndex, cardIndex }: ICardProps) => {
     });
     setAddText(false);
   };
+  const handleTextUndo = () => {
+    if (data.blocks.length === 0) {
+      setIsEmpty(false);
+    }
+    setEditorState(EditorState.undo(editorState));
+    setAddText(false);
+  };
+
   const handleAddTextToggle = () => {
     if (data.blocks.length === 0) {
       setIsEmpty(true);
@@ -81,6 +91,7 @@ const TextEditor = ({ boardIndex, cardIndex }: ICardProps) => {
       handleInlineClick(style);
     }
   };
+
   return (
     <DescriptionWrap>
       {data.blocks.length === 0 && !isEmpty ? (
@@ -127,7 +138,7 @@ const TextEditor = ({ boardIndex, cardIndex }: ICardProps) => {
           {addText && (
             <ButtonArea>
               <input type="submit" value="Save" onClick={onTextSubmit} />
-              <button type="button" onClick={() => setAddText(false)}>
+              <button type="button" onClick={handleTextUndo}>
                 Cancel
               </button>
             </ButtonArea>
