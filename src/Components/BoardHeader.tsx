@@ -18,7 +18,7 @@ const BoardHeader = ({ boardTitle, boardIndex }: IBoard) => {
   const { handleSubmit, register, setFocus } = useForm<IForm>({
     defaultValues: { title: boardTitle },
   });
-  const BoardPopUp = useModal(`${boardTitle}-${boardIndex}`);
+  const BoardPopUp = useModal(`${boardTitle}`);
   const {
     modal: { isOpen },
     isOpenModal,
