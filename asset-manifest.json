@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "https://eunjeong90.github.io/trello/static/css/main.3d5ed981.css",
-    "main.js": "https://eunjeong90.github.io/trello/static/js/main.1f67a170.js",
+    "main.js": "https://eunjeong90.github.io/trello/static/js/main.53f2b4c8.js",
     "index.html": "https://eunjeong90.github.io/trello/index.html",
     "main.3d5ed981.css.map": "https://eunjeong90.github.io/trello/static/css/main.3d5ed981.css.map",
-    "main.1f67a170.js.map": "https://eunjeong90.github.io/trello/static/js/main.1f67a170.js.map"
+    "main.53f2b4c8.js.map": "https://eunjeong90.github.io/trello/static/js/main.53f2b4c8.js.map"
   },
   "entrypoints": [
     "static/css/main.3d5ed981.css",
-    "static/js/main.1f67a170.js"
+    "static/js/main.53f2b4c8.js"
   ]
 }
