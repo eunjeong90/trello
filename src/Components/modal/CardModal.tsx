@@ -74,7 +74,7 @@ const CardModal = ({
     titleRef.current?.select();
   };
   return (
-    <Wrapper onClick={() => history.push(`/`)}>
+    <Wrapper onClick={() => history.goBack()}>
       <ModalArea>
         <div>
           <CardBox>
@@ -150,7 +150,7 @@ const CardModal = ({
               </div>
             </SideBar>
           </CardBox>
-          <CloseIcon role="presentation" onClick={() => history.push(`/`)}>
+          <CloseIcon role="presentation" onClick={() => history.goBack()}>
             <FontAwesomeIcon icon={faXmark} />
           </CloseIcon>
         </div>
