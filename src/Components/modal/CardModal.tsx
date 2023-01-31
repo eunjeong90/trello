@@ -74,7 +74,8 @@ const CardModal = ({
     titleRef.current?.select();
   };
   return (
-    <Wrapper onClick={() => history.goBack()}>
+    <>
+      <Wrapper onClick={() => history.goBack()} />
       <ModalArea>
         <div>
           <CardBox>
@@ -155,14 +156,14 @@ const CardModal = ({
           </CloseIcon>
         </div>
       </ModalArea>
-    </Wrapper>
+    </>
   );
 };
 
 export default CardModal;
 
 const Wrapper = styled.div`
-  display: flex;
+  /* display: flex;
   align-items: flex-start;
   background-color: #00000087;
   height: 100%;
@@ -172,18 +173,31 @@ const Wrapper = styled.div`
   overflow-x: hidden;
   position: fixed;
   top: 0;
-  width: 100%;
-  z-index: 20;
+  width: 100%; */
+  /* z-index: 20; */
+  z-index: 15;
+  display: block;
+  background: rgba(0, 0, 0, 0.3);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 `;
 const ModalArea = styled.div`
   background-color: #f4f5f7;
   border-radius: 2px;
   margin: 48px 0 80px;
   overflow: hidden;
-  position: relative;
+  /* position: relative; */
   width: 768px;
   z-index: 25;
   overflow: visible;
+
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 const CloseIcon = styled.i`
   border-radius: 50%;
@@ -200,8 +214,8 @@ const CloseIcon = styled.i`
   top: 0;
   transition: background-color 85ms, color 85ms;
   width: 32px;
-  z-index: 2;
   cursor: pointer;
+  z-index: 30;
   &:hover {
     background-color: #091e4214;
     color: #42526e;
@@ -323,4 +337,5 @@ export const ContentTitleArea = styled.div`
 const Description = styled.div`
   margin-bottom: 24px;
   position: relative;
+  z-index: 200;
 `;
