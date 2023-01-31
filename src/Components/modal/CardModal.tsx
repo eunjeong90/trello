@@ -9,13 +9,14 @@ import {
   faHeading,
   faPenToSquare,
   faTrashCan,
+  faClock,
 } from "@fortawesome/free-solid-svg-icons";
 import { CardTitle } from "styles/shared";
 import { IBoard } from "Components/Board";
 import CheckList from "Components/AddToModal/CheckList";
 import TextEditor from "Components/AddToModal/TextEditor";
+import { useHistory } from "react-router-dom";
 interface ICardProps extends IBoard {
-  isHideModal(): void;
   handleCardRemove(param: number): void;
   cardText: string;
   cardId: number;
@@ -34,9 +35,9 @@ const CardModal = ({
   cardId,
   cardIndex,
   cardContent,
-  isHideModal,
   handleCardRemove,
 }: ICardProps) => {
+  const history = useHistory();
   const setBoards = useSetRecoilState(BoardState);
   const { register, handleSubmit } = useForm<IForm>();
   const titleRef = useRef<HTMLTextAreaElement | null>(null);
@@ -73,7 +74,7 @@ const CardModal = ({
     titleRef.current?.select();
   };
   return (
-    <Wrapper>
+    <Wrapper onClick={() => history.push(`/`)}>
       <ModalArea>
         <div>
           <CardBox>
@@ -127,7 +128,17 @@ const CardModal = ({
               />
             </MainColumn>
             <SideBar>
-              <div className="actionList">
+              <div className="Add-list">
+                <strong>Add to card</strong>
+                <button onClick={() => handleCardRemove(cardIndex)}>
+                  <i>
+                    <FontAwesomeIcon icon={faClock} />
+                  </i>
+
+                  <span>Dates</span>
+                </button>
+              </div>
+              <div className="action-list">
                 <strong>Actions</strong>
                 <button onClick={() => handleCardRemove(cardIndex)}>
                   <i>
@@ -139,7 +150,7 @@ const CardModal = ({
               </div>
             </SideBar>
           </CardBox>
-          <CloseIcon role="presentation" onClick={() => isHideModal()}>
+          <CloseIcon role="presentation" onClick={() => history.push(`/`)}>
             <FontAwesomeIcon icon={faXmark} />
           </CloseIcon>
         </div>
@@ -153,7 +164,7 @@ export default CardModal;
 const Wrapper = styled.div`
   display: flex;
   align-items: flex-start;
-  background-color: #00000014;
+  background-color: #00000087;
   height: 100%;
   justify-content: center;
   left: 0;
@@ -239,7 +250,8 @@ const SideBar = styled.div`
   padding: 0 16px 8px 8px;
   width: calc(100% - 600px);
   z-index: 10;
-  div.actionList {
+  div {
+    margin-bottom: 8px;
     strong {
       color: #5e6c84;
       font-size: 12px;

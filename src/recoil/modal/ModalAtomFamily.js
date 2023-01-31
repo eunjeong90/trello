@@ -1,4 +1,10 @@
 import { atomFamily } from "recoil";
+import { recoilPersist } from "recoil-persist";
+
+const { persistAtom } = recoilPersist({
+  key: "ModalAtomFamilyPersist",
+  storage: localStorage,
+});
 
 export const ModalAtomFamily = atomFamily({
   key: "ModalAtomFamily",
@@ -9,4 +15,5 @@ export const ModalAtomFamily = atomFamily({
     content: "",
     selectOption: "",
   }),
+  effects_UNSTABLE: [persistAtom],
 });
