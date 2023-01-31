@@ -6,9 +6,10 @@ import { Title } from "styles/shared";
 import { BoardState } from "recoil/BoardState";
 import { useSetRecoilState } from "recoil";
 import { IBoard } from "./Board";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import useModal from "hook/useModal";
 import HeaderListModal from "./modal/HeaderListModal";
+import ToolTipPortal from "Portal_Tooltip";
 
 interface IForm {
   title: string;
@@ -24,10 +25,10 @@ const BoardHeader = ({ boardTitle, boardIndex }: IBoard) => {
     isOpenModal,
     isHideModal,
   } = BoardPopUp;
-  const [toggle, setToggle] = useState(isOpen);
+  const [toggle, setToggle] = useState<boolean>(isOpen);
   const titleRef = useRef<HTMLTextAreaElement | null>(null);
   const { ref } = register("title");
-
+  const tooltipBtn = useRef<HTMLButtonElement | null>(null);
   const onRenameTitleSubmit = ({ title }: IForm) => {
     setBoards((allBoards) => {
       const copyBoard = [...allBoards];
@@ -82,15 +83,29 @@ const BoardHeader = ({ boardTitle, boardIndex }: IBoard) => {
     console.log(toggle);
   };
 
+  const [coords, setCoords] = useState<object>({});
+
+  const updateTooltipCoords = (button: any) => {
+    const rect = button.getBoundingClientRect();
+    setCoords({
+      left: rect.x + rect.width / 2,
+      top: rect.y + window.scrollY,
+    });
+    console.log(window.scrollY);
+  };
   return (
     <>
       {isOpen && (
-        <HeaderListModal
-          handleBoardRemove={handleBoardRemove}
-          isHideModal={isHideModal}
-          handleAllCardRemove={handleAllCardRemove}
-          setToggle={setToggle}
-        />
+        <ToolTipPortal>
+          <HeaderListModal
+            handleBoardRemove={handleBoardRemove}
+            isHideModal={isHideModal}
+            handleAllCardRemove={handleAllCardRemove}
+            setToggle={setToggle}
+            coords={coords}
+            updateTooltipCoords={() => updateTooltipCoords(tooltipBtn.current)}
+          />
+        </ToolTipPortal>
       )}
       <Header onSubmit={handleSubmit(onRenameTitleSubmit)}>
         <TargetArea onClick={handleHeaderClickEvent} />
@@ -106,10 +121,16 @@ const BoardHeader = ({ boardTitle, boardIndex }: IBoard) => {
         >
           {boardTitle}
         </Title>
-        <HeaderListIconBox onClick={handleCloseToggle}>
-          <div>
+        <HeaderListIconBox>
+          <button
+            ref={tooltipBtn}
+            onClick={(e) => {
+              updateTooltipCoords(e.currentTarget);
+              handleCloseToggle();
+            }}
+          >
             <FontAwesomeIcon icon={faEllipsis} />
-          </div>
+          </button>
         </HeaderListIconBox>
       </Header>
     </>
@@ -144,7 +165,7 @@ const HeaderListIconBox = styled.div`
   &:hover {
     background-color: #b4b7bb6d;
   }
-  div {
+  button {
     padding: 6px;
   }
   svg {

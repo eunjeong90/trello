@@ -1,3 +1,5 @@
+import React, { useEffect } from "react";
+import debounce from "lodash/debounce";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -7,6 +9,8 @@ export interface IList {
   handleAllCardRemove: () => void;
   isHideModal: () => void;
   setToggle: React.Dispatch<React.SetStateAction<boolean>>;
+  coords: object;
+  updateTooltipCoords(): void;
 }
 
 const HeaderListModal = ({
@@ -14,13 +18,22 @@ const HeaderListModal = ({
   handleAllCardRemove,
   isHideModal,
   setToggle,
+  coords,
+  updateTooltipCoords,
 }: IList) => {
+  const updateCoords = debounce(updateTooltipCoords, 100);
+
+  useEffect(() => {
+    window.addEventListener("resize", updateCoords);
+    return () => window.removeEventListener("resize", updateCoords);
+  }, [updateCoords]);
+
   const handleClose = () => {
     setToggle(false);
     isHideModal();
   };
   return (
-    <BoardPopUp>
+    <BoardPopUp style={{ ...coords }}>
       <div>
         <PopHeader>
           <span>List actions</span>
@@ -59,10 +72,8 @@ const BoardPopUp = styled.div`
   overflow: hidden;
   background-color: ${({ theme }) => theme.cardColor};
   position: absolute;
-  left: 230px;
-  right: 0;
   width: 304px;
-  top: 40px;
+  transform: translate(5px, 16%);
   z-index: 100;
   border-radius: 3px;
   box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
