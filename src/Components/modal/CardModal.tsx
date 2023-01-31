@@ -130,13 +130,13 @@ const CardModal = ({
             <SideBar>
               <div className="Add-list">
                 <strong>Add to card</strong>
-                <button onClick={() => handleCardRemove(cardIndex)}>
+                {/* <button onClick={() => handleCardRemove(cardIndex)}>
                   <i>
                     <FontAwesomeIcon icon={faClock} />
                   </i>
 
                   <span>Dates</span>
-                </button>
+                </button> */}
               </div>
               <div className="action-list">
                 <strong>Actions</strong>
