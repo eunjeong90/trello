@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faListCheck } from "@fortawesome/free-solid-svg-icons";
+import { faListCheck, faTrash } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { ContentTitleArea } from "Components/modal/CardModal";
 import { CheckListTextArea } from "styles/shared";
@@ -8,6 +8,7 @@ import { useSetRecoilState } from "recoil";
 import { BoardState, IBoardType, ICheckListType } from "recoil/BoardState";
 import { useForm } from "react-hook-form";
 import { IBoard } from "Components/Board";
+import { rest } from "lodash";
 
 interface ICheckListProps extends IBoard {
   cardText: string;
@@ -31,12 +32,14 @@ const CheckList = ({
   const { checkList } = cardContent;
   const [toggleAddList, setToggleAddList] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+
   useEffect(() => {
     setFocus("list");
   }, [toggleAddList, setFocus]);
 
   const onCheckListSubmit = ({ list }: IListForm) => {
     console.log(list);
+    if (!list) return;
     setBoards((allBoards) => {
       const copyBoards = JSON.parse(JSON.stringify(allBoards));
       const targetBoardContent = copyBoards[boardIndex].content;
@@ -45,7 +48,6 @@ const CheckList = ({
         value: list,
         state: isChecked,
       };
-      console.log(newCheckList);
       const { checkList, ...rest } = targetBoardContent[cardIndex];
       targetBoardContent[cardIndex] = {
         ...rest,
@@ -56,6 +58,22 @@ const CheckList = ({
     setValue("list", "");
     setFocus("list");
   };
+  const handleCheckListRemove = (targetId: number) => {
+    setBoards((allBoards) => {
+      const deepCopy = JSON.parse(JSON.stringify(allBoards));
+      const targetBoardContent = deepCopy[boardIndex].content;
+      const newArr = targetBoardContent[cardIndex].checkList.filter(
+        (list: ICheckListType) => targetId !== list.checkId
+      );
+      const { checkList, ...rest } = targetBoardContent[cardIndex];
+      targetBoardContent[cardIndex] = {
+        ...rest,
+        checkList: newArr,
+      };
+      return deepCopy;
+    });
+  };
+
   const handleBoardTitleKeyPress = (keyEvent: React.KeyboardEvent) => {
     if (keyEvent.key === "Enter" && keyEvent.shiftKey === false) {
       keyEvent.preventDefault();
@@ -77,7 +95,6 @@ const CheckList = ({
             state: !item.state,
           };
           setIsChecked(!item.state);
-          console.log(isChecked);
           return newObj;
         } else {
           return item;
@@ -91,6 +108,7 @@ const CheckList = ({
       return [...copyBoards];
     });
   };
+
   const stateArr = checkList?.map((item) => item.state);
   const currentState = stateArr.filter((item) => item);
   return (
@@ -126,7 +144,17 @@ const CheckList = ({
                 >
                   <Checked isChecked={item.state ? "1" : "0"} />
                 </CheckBox>
-                <span>{item.value}</span>
+                <ListText>
+                  <span>{item.value}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleCheckListRemove(item.checkId)}
+                  >
+                    <i>
+                      <FontAwesomeIcon icon={faTrash} />
+                    </i>
+                  </button>
+                </ListText>
               </ListItem>
             </ListView>
           ))}
@@ -200,6 +228,10 @@ const ListView = styled.form`
   transition-property: transform, opacity, height, padding, margin,
     background-color;
   transition-timing-function: ease-in;
+  border-radius: 3px;
+  &:hover {
+    background-color: #a4a4a41c;
+  }
 `;
 const CheckBox = styled.div<{ checked: boolean }>`
   border-radius: 2px;
@@ -210,12 +242,12 @@ const CheckBox = styled.div<{ checked: boolean }>`
   cursor: pointer;
   flex-shrink: 0;
   height: 16px;
-  left: -5px;
+  left: -1px;
   margin: 6px;
   overflow: hidden;
   position: absolute;
   text-align: center;
-  top: 1px;
+  top: 3px;
   transition: all 0.2s ease-in-out;
   white-space: nowrap;
   width: 16px;
@@ -230,10 +262,20 @@ const Checked = styled.span<{ isChecked: string }>`
 const ListItem = styled.div`
   overflow-wrap: break-word;
   word-break: break-word;
-  padding: 8px 0;
+  padding: 8px 2px;
   width: 100%;
-  span {
-    min-height: 20px;
+  border-radius: 3px;
+`;
+const ListText = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  button {
+    padding: 0 7px;
+    margin-right: 3px;
+  }
+  svg {
+    height: 11px;
   }
 `;
 const ProgressBar = styled.div`
