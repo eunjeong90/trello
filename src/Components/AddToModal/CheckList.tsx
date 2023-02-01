@@ -46,7 +46,7 @@ const CheckList = ({
       const newCheckList = {
         checkId: Date.now(),
         value: list,
-        state: isChecked,
+        state: false,
       };
       const { checkList, ...rest } = targetBoardContent[cardIndex];
       targetBoardContent[cardIndex] = {
