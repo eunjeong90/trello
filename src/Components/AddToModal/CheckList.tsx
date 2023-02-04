@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faListCheck, faTrash } from "@fortawesome/free-solid-svg-icons";
+import Icon_trash from "assets/img/trash-solid.svg";
 import styled from "styled-components";
 import { ContentTitleArea } from "Components/modal/CardModal";
 import { CheckListTextArea } from "styles/shared";
@@ -8,8 +9,6 @@ import { useSetRecoilState } from "recoil";
 import { BoardState, IBoardType, ICheckListType } from "recoil/BoardState";
 import { useForm } from "react-hook-form";
 import { IBoard } from "Components/Board";
-import { rest } from "lodash";
-
 interface ICheckListProps extends IBoard {
   cardText: string;
   cardId: number;
@@ -32,7 +31,7 @@ const CheckList = ({
   const { checkList } = cardContent;
   const [toggleAddList, setToggleAddList] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-
+  const [isHover, setIsHover] = useState(false);
   useEffect(() => {
     setFocus("list");
   }, [toggleAddList, setFocus]);
@@ -150,9 +149,9 @@ const CheckList = ({
                     type="button"
                     onClick={() => handleCheckListRemove(item.checkId)}
                   >
-                    <i>
-                      <FontAwesomeIcon icon={faTrash} />
-                    </i>
+                    <TrashIcon IconTrash={Icon_trash}>
+                      {/* <FontAwesomeIcon icon={faTrash} /> */}
+                    </TrashIcon>
                   </button>
                 </ListText>
               </ListItem>
@@ -218,6 +217,32 @@ const ContentBox = styled.div`
 const CheckListArea = styled.div`
   margin: 10px 0;
 `;
+const ListText = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  button {
+    padding: 0 7px;
+    margin-right: 3px;
+    position: relative;
+  }
+  svg {
+    height: 11px;
+  }
+`;
+const TrashIcon = styled.i<{ IconTrash: any }>`
+  &::before {
+    content: url(${({ IconTrash }) => IconTrash});
+    width: 12px;
+    height: 12px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: all 0.2s ease-in-out;
+  }
+`;
 const ListView = styled.form`
   display: flex;
   align-items: center;
@@ -231,6 +256,11 @@ const ListView = styled.form`
   border-radius: 3px;
   &:hover {
     background-color: #a4a4a41c;
+    ${TrashIcon} {
+      &::before {
+        opacity: 1;
+      }
+    }
   }
 `;
 const CheckBox = styled.div<{ checked: boolean }>`
@@ -266,18 +296,7 @@ const ListItem = styled.div`
   width: 100%;
   border-radius: 3px;
 `;
-const ListText = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  button {
-    padding: 0 7px;
-    margin-right: 3px;
-  }
-  svg {
-    height: 11px;
-  }
-`;
+
 const ProgressBar = styled.div`
   margin-bottom: 6px;
   position: relative;
